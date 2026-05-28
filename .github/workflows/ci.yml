@@ -816,42 +816,49 @@ jobs:
           - project: container
             dockerfile: Dockerfile.production
             tag: mfe-container:prod
+            context: .
           - project: home
             dockerfile: Dockerfile.development
             tag: mfe-home:dev
           - project: home
             dockerfile: Dockerfile.production
             tag: mfe-home:prod
+            context: .
           - project: about
             dockerfile: Dockerfile.development
             tag: mfe-about:dev
           - project: about
             dockerfile: Dockerfile.production
             tag: mfe-about:prod
+            context: .
           - project: users
             dockerfile: Dockerfile.development
             tag: mfe-users:dev
           - project: users
             dockerfile: Dockerfile.production
             tag: mfe-users:prod
+            context: .
           - project: notfound
             dockerfile: Dockerfile.development
             tag: mfe-notfound:dev
           - project: notfound
             dockerfile: Dockerfile.production
             tag: mfe-notfound:prod
+            context: .
           - project: product
             dockerfile: Dockerfile.development
             tag: mfe-product:dev
           - project: product
             dockerfile: Dockerfile.production
             tag: mfe-product:prod
+            context: .
           - project: context
             dockerfile: Dockerfile.development
             tag: mfe-context:dev
           - project: context
             dockerfile: Dockerfile.production
             tag: mfe-context:prod
+            context: .
 
     steps:
       - uses: actions/checkout@v4.2.2
@@ -862,7 +869,7 @@ jobs:
       - name: Build ${{ matrix.project }}/${{ matrix.dockerfile }}
         uses: docker/build-push-action@v6.15.0
         with:
-          context: ${{ matrix.project }}
+          context: ${{ matrix.context || matrix.project }}
           file: ${{ matrix.project }}/${{ matrix.dockerfile }}
           push: false
           tags: ${{ matrix.tag }}
