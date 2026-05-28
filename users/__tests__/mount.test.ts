@@ -10,6 +10,7 @@ import UsersPage from "@/pages/UsersPage/UsersPage.vue";
 import { mount, unmount } from "@/mount";
 
 interface MockApp {
+  config: { errorHandler?: (error: unknown) => void };
   provide: Mock;
   mount: Mock;
   unmount: Mock;
@@ -40,6 +41,7 @@ const buildOptions = (): UsersMfeMountOptions => ({
 });
 
 const createMockApp = (): MockApp => ({
+  config: {},
   provide: vi.fn(),
   mount: vi.fn(),
   unmount: vi.fn(),
