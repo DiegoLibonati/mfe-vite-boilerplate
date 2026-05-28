@@ -193,9 +193,15 @@ jobs:
         with:
           node-version-file: home/.nvmrc
           cache: npm
-          cache-dependency-path: home/package-lock.json
+          cache-dependency-path: |
+            home/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: ESLint
@@ -227,9 +233,15 @@ jobs:
         with:
           node-version-file: home/.nvmrc
           cache: npm
-          cache-dependency-path: home/package-lock.json
+          cache-dependency-path: |
+            home/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Run tests
@@ -251,9 +263,15 @@ jobs:
         with:
           node-version-file: home/.nvmrc
           cache: npm
-          cache-dependency-path: home/package-lock.json
+          cache-dependency-path: |
+            home/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Build
@@ -277,9 +295,15 @@ jobs:
         with:
           node-version-file: about/.nvmrc
           cache: npm
-          cache-dependency-path: about/package-lock.json
+          cache-dependency-path: |
+            about/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: ESLint
@@ -311,9 +335,15 @@ jobs:
         with:
           node-version-file: about/.nvmrc
           cache: npm
-          cache-dependency-path: about/package-lock.json
+          cache-dependency-path: |
+            about/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Run tests
@@ -335,9 +365,15 @@ jobs:
         with:
           node-version-file: about/.nvmrc
           cache: npm
-          cache-dependency-path: about/package-lock.json
+          cache-dependency-path: |
+            about/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Build
@@ -361,9 +397,15 @@ jobs:
         with:
           node-version-file: users/.nvmrc
           cache: npm
-          cache-dependency-path: users/package-lock.json
+          cache-dependency-path: |
+            users/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: ESLint
@@ -395,9 +437,15 @@ jobs:
         with:
           node-version-file: users/.nvmrc
           cache: npm
-          cache-dependency-path: users/package-lock.json
+          cache-dependency-path: |
+            users/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Run tests
@@ -419,9 +467,15 @@ jobs:
         with:
           node-version-file: users/.nvmrc
           cache: npm
-          cache-dependency-path: users/package-lock.json
+          cache-dependency-path: |
+            users/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Build
@@ -445,9 +499,15 @@ jobs:
         with:
           node-version-file: notfound/.nvmrc
           cache: npm
-          cache-dependency-path: notfound/package-lock.json
+          cache-dependency-path: |
+            notfound/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: ESLint
@@ -479,9 +539,15 @@ jobs:
         with:
           node-version-file: notfound/.nvmrc
           cache: npm
-          cache-dependency-path: notfound/package-lock.json
+          cache-dependency-path: |
+            notfound/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Run tests
@@ -503,9 +569,15 @@ jobs:
         with:
           node-version-file: notfound/.nvmrc
           cache: npm
-          cache-dependency-path: notfound/package-lock.json
+          cache-dependency-path: |
+            notfound/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Build
@@ -529,9 +601,15 @@ jobs:
         with:
           node-version-file: product/.nvmrc
           cache: npm
-          cache-dependency-path: product/package-lock.json
+          cache-dependency-path: |
+            product/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: ESLint
@@ -563,9 +641,15 @@ jobs:
         with:
           node-version-file: product/.nvmrc
           cache: npm
-          cache-dependency-path: product/package-lock.json
+          cache-dependency-path: |
+            product/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Run tests
@@ -587,9 +671,15 @@ jobs:
         with:
           node-version-file: product/.nvmrc
           cache: npm
-          cache-dependency-path: product/package-lock.json
+          cache-dependency-path: |
+            product/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Build
@@ -613,9 +703,15 @@ jobs:
         with:
           node-version-file: context/.nvmrc
           cache: npm
-          cache-dependency-path: context/package-lock.json
+          cache-dependency-path: |
+            context/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: ESLint
@@ -647,9 +743,15 @@ jobs:
         with:
           node-version-file: context/.nvmrc
           cache: npm
-          cache-dependency-path: context/package-lock.json
+          cache-dependency-path: |
+            context/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Run tests
@@ -671,9 +773,15 @@ jobs:
         with:
           node-version-file: context/.nvmrc
           cache: npm
-          cache-dependency-path: context/package-lock.json
+          cache-dependency-path: |
+            context/package-lock.json
+            shared/package-lock.json
 
       - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install shared dependencies
+        working-directory: shared
         run: npm ci --ignore-scripts
 
       - name: Build
