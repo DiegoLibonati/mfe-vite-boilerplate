@@ -1,0 +1,47 @@
+/** @type {import('jest').Config} */
+
+const config = {
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  rootDir: ".",
+  roots: ["<rootDir>/__tests__"],
+  setupFiles: ["<rootDir>/__tests__/jest.polyfills.ts"],
+  setupFilesAfterEnv: ["<rootDir>/__tests__/jest.setup.ts"],
+  testMatch: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+  moduleNameMapper: {
+    "\\.(css|scss)$": "<rootDir>/__tests__/__mocks__/style.mock.ts",
+    "\\.(png|jpg|jpeg|gif|svg|webp)$": "<rootDir>/__tests__/__mocks__/file.mock.ts",
+    "^react$": "<rootDir>/node_modules/react",
+    "^react/(.*)$": "<rootDir>/node_modules/react/$1",
+    "^react-dom$": "<rootDir>/node_modules/react-dom",
+    "^react-dom/(.*)$": "<rootDir>/node_modules/react-dom/$1",
+    "^@mfe/shared$": "<rootDir>/../shared/src/exports.ts",
+    "^@mfe/shared/(.*)$": "<rootDir>/../shared/src/$1",
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "^@tests/(.*)$": "<rootDir>/__tests__/$1",
+  },
+  transform: {
+    "^.+\\.tsx?$": ["ts-jest", { tsconfig: "tsconfig.test.json" }],
+  },
+  collectCoverageFrom: [
+    "src/**/*.{ts,tsx}",
+    "!src/**/*.d.ts",
+    "!src/index.tsx",
+    "!src/types/**/*.ts",
+  ],
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html"],
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+  },
+  clearMocks: true,
+  restoreMocks: true,
+  resetMocks: true,
+};
+
+export default config;

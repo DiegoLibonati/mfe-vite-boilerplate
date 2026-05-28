@@ -1,0 +1,39 @@
+.context-page {
+  padding: 1rem;
+}
+
+.context-page .title {
+  color: var(--color-white);
+  font-size: clamp(2rem, 10vw, 5rem);
+}
+
+.context-page .links,
+.context-page .actions,
+.context-page .counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 1rem;
+  width: 100%;
+  height: auto;
+  margin-top: 1rem;
+}
+
+.context-page .counter {
+  gap: 2rem;
+  height: 3rem;
+}
+
+.context-page .counter__subtract,
+.context-page .counter__plus {
+  font-size: 1.5rem;
+  border: none;
+  height: 100%;
+  width: 3rem;
+}
+
+.context-page .counter__number {
+  font-size: 1.5rem;
+  color: var(--color-white);
+}

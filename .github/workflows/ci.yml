@@ -1,0 +1,760 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ============================================================
+  # SHARED
+  # ============================================================
+  shared-lint-and-audit:
+    name: Shared - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shared
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: shared/.nvmrc
+          cache: npm
+          cache-dependency-path: shared/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  shared-test:
+    name: Shared - Testing
+    runs-on: ubuntu-latest
+    needs: shared-lint-and-audit
+    defaults:
+      run:
+        working-directory: shared
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: shared/.nvmrc
+          cache: npm
+          cache-dependency-path: shared/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  shared-build:
+    name: Shared - Build
+    runs-on: ubuntu-latest
+    needs: shared-test
+    defaults:
+      run:
+        working-directory: shared
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: shared/.nvmrc
+          cache: npm
+          cache-dependency-path: shared/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # CONTAINER
+  # ============================================================
+  container-lint-and-audit:
+    name: Container - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: container
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: container/.nvmrc
+          cache: npm
+          cache-dependency-path: container/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  container-test:
+    name: Container - Testing
+    runs-on: ubuntu-latest
+    needs: container-lint-and-audit
+    defaults:
+      run:
+        working-directory: container
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: container/.nvmrc
+          cache: npm
+          cache-dependency-path: container/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  container-build:
+    name: Container - Build
+    runs-on: ubuntu-latest
+    needs: container-test
+    defaults:
+      run:
+        working-directory: container
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: container/.nvmrc
+          cache: npm
+          cache-dependency-path: container/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # HOME (React)
+  # ============================================================
+  home-lint-and-audit:
+    name: Home - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: home
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: home/.nvmrc
+          cache: npm
+          cache-dependency-path: home/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  home-test:
+    name: Home - Testing
+    runs-on: ubuntu-latest
+    needs: home-lint-and-audit
+    defaults:
+      run:
+        working-directory: home
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: home/.nvmrc
+          cache: npm
+          cache-dependency-path: home/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  home-build:
+    name: Home - Build
+    runs-on: ubuntu-latest
+    needs: home-test
+    defaults:
+      run:
+        working-directory: home
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: home/.nvmrc
+          cache: npm
+          cache-dependency-path: home/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # ABOUT (Angular)
+  # ============================================================
+  about-lint-and-audit:
+    name: About - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: about
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: about/.nvmrc
+          cache: npm
+          cache-dependency-path: about/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  about-test:
+    name: About - Testing
+    runs-on: ubuntu-latest
+    needs: about-lint-and-audit
+    defaults:
+      run:
+        working-directory: about
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: about/.nvmrc
+          cache: npm
+          cache-dependency-path: about/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  about-build:
+    name: About - Build
+    runs-on: ubuntu-latest
+    needs: about-test
+    defaults:
+      run:
+        working-directory: about
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: about/.nvmrc
+          cache: npm
+          cache-dependency-path: about/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # USERS (Vue)
+  # ============================================================
+  users-lint-and-audit:
+    name: Users - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: users
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: users/.nvmrc
+          cache: npm
+          cache-dependency-path: users/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  users-test:
+    name: Users - Testing
+    runs-on: ubuntu-latest
+    needs: users-lint-and-audit
+    defaults:
+      run:
+        working-directory: users
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: users/.nvmrc
+          cache: npm
+          cache-dependency-path: users/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  users-build:
+    name: Users - Build
+    runs-on: ubuntu-latest
+    needs: users-test
+    defaults:
+      run:
+        working-directory: users
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: users/.nvmrc
+          cache: npm
+          cache-dependency-path: users/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # NOTFOUND
+  # ============================================================
+  notfound-lint-and-audit:
+    name: NotFound - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: notfound
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: notfound/.nvmrc
+          cache: npm
+          cache-dependency-path: notfound/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  notfound-test:
+    name: NotFound - Testing
+    runs-on: ubuntu-latest
+    needs: notfound-lint-and-audit
+    defaults:
+      run:
+        working-directory: notfound
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: notfound/.nvmrc
+          cache: npm
+          cache-dependency-path: notfound/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  notfound-build:
+    name: NotFound - Build
+    runs-on: ubuntu-latest
+    needs: notfound-test
+    defaults:
+      run:
+        working-directory: notfound
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: notfound/.nvmrc
+          cache: npm
+          cache-dependency-path: notfound/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # PRODUCT
+  # ============================================================
+  product-lint-and-audit:
+    name: Product - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: product
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: product/.nvmrc
+          cache: npm
+          cache-dependency-path: product/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  product-test:
+    name: Product - Testing
+    runs-on: ubuntu-latest
+    needs: product-lint-and-audit
+    defaults:
+      run:
+        working-directory: product
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: product/.nvmrc
+          cache: npm
+          cache-dependency-path: product/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  product-build:
+    name: Product - Build
+    runs-on: ubuntu-latest
+    needs: product-test
+    defaults:
+      run:
+        working-directory: product
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: product/.nvmrc
+          cache: npm
+          cache-dependency-path: product/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # CONTEXT
+  # ============================================================
+  context-lint-and-audit:
+    name: Context - Lint & Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: context
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: context/.nvmrc
+          cache: npm
+          cache-dependency-path: context/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier format check
+        run: npm run format:check
+
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      - name: npm audit (high+)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  context-test:
+    name: Context - Testing
+    runs-on: ubuntu-latest
+    needs: context-lint-and-audit
+    defaults:
+      run:
+        working-directory: context
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: context/.nvmrc
+          cache: npm
+          cache-dependency-path: context/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run tests
+        run: npm test
+
+  context-build:
+    name: Context - Build
+    runs-on: ubuntu-latest
+    needs: context-test
+    defaults:
+      run:
+        working-directory: context
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: context/.nvmrc
+          cache: npm
+          cache-dependency-path: context/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+  # ============================================================
+  # DOCKER - all images in parallel, after everything
+  # ============================================================
+  docker-build:
+    name: Docker Build - ${{ matrix.project }} ${{ matrix.tag }}
+    runs-on: ubuntu-latest
+    needs:
+      - shared-build
+      - container-build
+      - home-build
+      - about-build
+      - users-build
+      - notfound-build
+      - product-build
+      - context-build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: shared
+            dockerfile: Dockerfile.development
+            tag: mfe-shared:dev
+          - project: container
+            dockerfile: Dockerfile.development
+            tag: mfe-container:dev
+          - project: container
+            dockerfile: Dockerfile.production
+            tag: mfe-container:prod
+          - project: home
+            dockerfile: Dockerfile.development
+            tag: mfe-home:dev
+          - project: home
+            dockerfile: Dockerfile.production
+            tag: mfe-home:prod
+          - project: about
+            dockerfile: Dockerfile.development
+            tag: mfe-about:dev
+          - project: about
+            dockerfile: Dockerfile.production
+            tag: mfe-about:prod
+          - project: users
+            dockerfile: Dockerfile.development
+            tag: mfe-users:dev
+          - project: users
+            dockerfile: Dockerfile.production
+            tag: mfe-users:prod
+          - project: notfound
+            dockerfile: Dockerfile.development
+            tag: mfe-notfound:dev
+          - project: notfound
+            dockerfile: Dockerfile.production
+            tag: mfe-notfound:prod
+          - project: product
+            dockerfile: Dockerfile.development
+            tag: mfe-product:dev
+          - project: product
+            dockerfile: Dockerfile.production
+            tag: mfe-product:prod
+          - project: context
+            dockerfile: Dockerfile.development
+            tag: mfe-context:dev
+          - project: context
+            dockerfile: Dockerfile.production
+            tag: mfe-context:prod
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.10.0
+
+      - name: Build ${{ matrix.project }}/${{ matrix.dockerfile }}
+        uses: docker/build-push-action@v6.15.0
+        with:
+          context: ${{ matrix.project }}
+          file: ${{ matrix.project }}/${{ matrix.dockerfile }}
+          push: false
+          tags: ${{ matrix.tag }}

@@ -1,0 +1,22 @@
+.context-app__banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin: 1rem;
+  background-color: rgba(var(--color-accent-rgb), 0.15);
+  border: 0.063rem solid rgba(var(--color-accent-rgb), 0.3);
+  border-radius: 0.5rem;
+}
+
+.context-app__banner-label {
+  font-size: 1rem;
+  color: var(--color-gray-light);
+}
+
+.context-app__banner-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}

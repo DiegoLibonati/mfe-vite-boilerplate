@@ -1,0 +1,22 @@
+.users-app-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  min-height: 50vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.users-app-error__title {
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1.2;
+}
+
+.users-app-error__message {
+  font-size: 1rem;
+  color: var(--color-gray-light);
+}

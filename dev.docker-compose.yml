@@ -1,0 +1,151 @@
+services:
+  container:
+    build:
+      context: ./container
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    env_file:
+      - ./container/.env
+    volumes:
+      - ./container:/home/app
+      - ./shared:/home/shared
+      - /home/app/node_modules
+    ports:
+      - 3000:3000
+    networks:
+      - boilerplate-net
+    depends_on:
+      - home
+      - about
+      - users
+      - notfound
+      - product
+      - context
+    stdin_open: true
+    tty: true
+
+  shared:
+    build:
+      context: ./shared
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    volumes:
+      - ./shared:/home/app
+      - /home/app/node_modules
+    ports:
+      - 4000:4000
+    networks:
+      - boilerplate-net
+    stdin_open: true
+    tty: true
+
+  home:
+    build:
+      context: ./home
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    env_file:
+      - ./home/.env
+    volumes:
+      - ./home:/home/app
+      - ./shared:/home/shared
+      - /home/app/node_modules
+    ports:
+      - 3010:3010
+    networks:
+      - boilerplate-net
+    stdin_open: true
+    tty: true
+
+  about:
+    build:
+      context: ./about
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    env_file:
+      - ./about/.env
+    volumes:
+      - ./about:/home/app
+      - ./shared:/home/shared
+      - /home/app/node_modules
+    ports:
+      - 3020:3020
+    networks:
+      - boilerplate-net
+    stdin_open: true
+    tty: true
+
+  users:
+    build:
+      context: ./users
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    env_file:
+      - ./users/.env
+    volumes:
+      - ./users:/home/app
+      - ./shared:/home/shared
+      - /home/app/node_modules
+    ports:
+      - 3030:3030
+    networks:
+      - boilerplate-net
+    stdin_open: true
+    tty: true
+
+  notfound:
+    build:
+      context: ./notfound
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    env_file:
+      - ./notfound/.env
+    volumes:
+      - ./notfound:/home/app
+      - ./shared:/home/shared
+      - /home/app/node_modules
+    ports:
+      - 3040:3040
+    networks:
+      - boilerplate-net
+    stdin_open: true
+    tty: true
+
+  product:
+    build:
+      context: ./product
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    env_file:
+      - ./product/.env
+    volumes:
+      - ./product:/home/app
+      - ./shared:/home/shared
+      - /home/app/node_modules
+    ports:
+      - 3050:3050
+    networks:
+      - boilerplate-net
+    stdin_open: true
+    tty: true
+
+  context:
+    build:
+      context: ./context
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    env_file:
+      - ./context/.env
+    volumes:
+      - ./context:/home/app
+      - ./shared:/home/shared
+      - /home/app/node_modules
+    ports:
+      - 3060:3060
+    networks:
+      - boilerplate-net
+    stdin_open: true
+    tty: true
+
+networks:
+  boilerplate-net:

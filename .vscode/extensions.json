@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens",
+    "mikestead.dotenv",
+    "antfu.vite",
+    "dsznajder.es7-react-js-snippets",
+    "angular.ng-template",
+    "vue.volar",
+    "orta.vscode-jest",
+    "vitest.explorer",
+    "ms-azuretools.vscode-docker",
+    "github.vscode-github-actions",
+    "redhat.vscode-yaml",
+    "eamodio.gitlens"
+  ]
+}

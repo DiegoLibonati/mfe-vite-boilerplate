@@ -1,0 +1,77 @@
+services:
+  container:
+    build:
+      context: .
+      dockerfile: container/Dockerfile.production
+      args:
+        VITE_REMOTE_HOME_URL: ${VITE_REMOTE_HOME_URL:-/mfe/home/remoteEntry.js}
+        VITE_REMOTE_ABOUT_URL: ${VITE_REMOTE_ABOUT_URL:-/mfe/about/remoteEntry.js}
+        VITE_REMOTE_USERS_URL: ${VITE_REMOTE_USERS_URL:-/mfe/users/remoteEntry.js}
+        VITE_REMOTE_NOTFOUND_URL: ${VITE_REMOTE_NOTFOUND_URL:-/mfe/notfound/remoteEntry.js}
+        VITE_REMOTE_PRODUCT_URL: ${VITE_REMOTE_PRODUCT_URL:-/mfe/product/remoteEntry.js}
+        VITE_REMOTE_CONTEXT_URL: ${VITE_REMOTE_CONTEXT_URL:-/mfe/context/remoteEntry.js}
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - boilerplate-net
+    depends_on:
+      - home
+      - about
+      - users
+      - notfound
+      - product
+      - context
+
+  home:
+    build:
+      context: .
+      dockerfile: home/Dockerfile.production
+    restart: always
+    networks:
+      - boilerplate-net
+
+  about:
+    build:
+      context: .
+      dockerfile: about/Dockerfile.production
+    restart: always
+    networks:
+      - boilerplate-net
+
+  users:
+    build:
+      context: .
+      dockerfile: users/Dockerfile.production
+    restart: always
+    networks:
+      - boilerplate-net
+
+  notfound:
+    build:
+      context: .
+      dockerfile: notfound/Dockerfile.production
+    restart: always
+    networks:
+      - boilerplate-net
+
+  product:
+    build:
+      context: .
+      dockerfile: product/Dockerfile.production
+    restart: always
+    networks:
+      - boilerplate-net
+
+  context:
+    build:
+      context: .
+      dockerfile: context/Dockerfile.production
+    restart: always
+    networks:
+      - boilerplate-net
+
+networks:
+  boilerplate-net:
