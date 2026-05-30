@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 
 import App from "@product/App";
 
-import { mount, unmount } from "@product/mount";
+import { mount, unmount } from "@product/Product.module";
 
 let mockRender: jest.Mock;
 let mockUnmount: jest.Mock;

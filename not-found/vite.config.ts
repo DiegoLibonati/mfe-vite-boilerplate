@@ -17,7 +17,7 @@ export default defineConfig(({ mode }): UserConfig => {
         name: "not-found",
         filename: "remoteEntry.js",
         exposes: {
-          "./NotFoundApp": "./src/mount.tsx",
+          "./NotFoundApp": "./src/NotFound.module.ts",
         },
         remotes: {
           shared: {

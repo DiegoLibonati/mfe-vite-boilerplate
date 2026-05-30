@@ -4,7 +4,7 @@ import type { MfeMountOptions } from "shared/sdk";
 
 import App from "@home/App";
 
-import { mount, unmount } from "@home/mount";
+import { mount, unmount } from "@home/Home.module";
 
 jest.mock("shared/sdk", () => {
   const actual: Record<string, unknown> = jest.requireActual("shared/sdk");

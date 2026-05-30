@@ -17,7 +17,7 @@ export default defineConfig(({ mode }): UserConfig => {
         name: "home",
         filename: "remoteEntry.js",
         exposes: {
-          "./HomeApp": "./src/mount.tsx",
+          "./HomeApp": "./src/Home.module.ts",
         },
         remotes: {
           shared: {
