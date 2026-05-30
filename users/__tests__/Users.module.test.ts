@@ -7,7 +7,7 @@ import type { UsersMfeMountOptions } from "@users/types/mfe";
 
 import UsersPage from "@users/pages/UsersPage/UsersPage.vue";
 
-import { mount, unmount } from "@users/mount";
+import { mount, unmount } from "@users/Users.module";
 
 interface MockApp {
   config: { errorHandler?: (error: unknown) => void };
@@ -47,7 +47,7 @@ const createMockApp = (): MockApp => ({
   unmount: vi.fn(),
 });
 
-describe("mount.ts", () => {
+describe("Users.module", () => {
   let container: HTMLElement;
   let options: UsersMfeMountOptions;
   let mockApp: MockApp;

@@ -57,7 +57,7 @@ export default defineConfig(({ mode }): AboutConfig => {
         name: "about",
         filename: "remoteEntry.js",
         exposes: {
-          "./AboutApp": "./src/mount.ts",
+          "./AboutApp": "./src/About.module.ts",
         },
         remotes: {
           shared: {

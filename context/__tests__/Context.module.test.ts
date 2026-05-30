@@ -2,9 +2,9 @@ import * as mfeShared from "shared/sdk";
 
 import type { MfeMountOptions } from "shared/sdk";
 
-import App from "@home/App";
+import App from "@context/App";
 
-import { mount, unmount } from "@home/Home.module";
+import { mount, unmount } from "@context/Context.module";
 
 jest.mock("shared/sdk", () => {
   const actual: Record<string, unknown> = jest.requireActual("shared/sdk");
@@ -15,18 +15,20 @@ jest.mock("shared/sdk", () => {
   };
 });
 
-describe("mount", () => {
+describe("Context.module", () => {
   describe("mount", () => {
-    it("should call shared mount with App, the container and options", () => {
+    it("should call shared mount with the App component, container, and options", () => {
       const container = document.createElement("div");
-      const options: MfeMountOptions = {
-        callbacks: { onNavigate: jest.fn() },
+      const mockOptions: MfeMountOptions = {
+        callbacks: {
+          onNavigate: jest.fn(),
+        },
       };
 
-      mount(container, options);
+      mount(container, mockOptions);
 
       expect(mfeShared.mount).toHaveBeenCalledTimes(1);
-      expect(mfeShared.mount).toHaveBeenCalledWith(App, container, options);
+      expect(mfeShared.mount).toHaveBeenCalledWith(App, container, mockOptions);
     });
   });
 

@@ -7,7 +7,7 @@ import { AboutPageComponent } from "@about/pages/about-page/about-page.component
 
 import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
-import { mount, unmount } from "@about/mount";
+import { mount, unmount } from "@about/About.module";
 
 const mockAttachView = jest.fn();
 const mockDestroy = jest.fn();
@@ -37,7 +37,7 @@ jest.mock("@angular/core", () => {
   return { ...actual, createComponent: jest.fn() };
 });
 
-describe("mount", () => {
+describe("About.module", () => {
   let container: HTMLElement;
   let options: MfeMountOptions;
 

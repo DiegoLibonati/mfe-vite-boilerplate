@@ -27,7 +27,7 @@ beforeEach(async () => {
   mockCreateRoot.mockReturnValue({ render: mockRender, unmount: mockUnmount });
 });
 
-describe("mount", () => {
+describe("Product.module", () => {
   describe("mount", () => {
     it("should call createRoot with the provided container", () => {
       const container = document.createElement("div");

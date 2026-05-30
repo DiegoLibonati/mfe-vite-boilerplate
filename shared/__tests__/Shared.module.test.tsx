@@ -12,7 +12,7 @@ const createMockOptions = (overrides: Partial<MfeMountOptions> = {}): MfeMountOp
   ...overrides,
 });
 
-describe("mount", () => {
+describe("Shared.module", () => {
   let container: HTMLDivElement;
 
   beforeEach(() => {
