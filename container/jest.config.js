@@ -15,9 +15,9 @@ const config = {
     "\\.(css|scss)$": "<rootDir>/__tests__/__mocks__/style.mock.ts",
     "\\.(png|jpg|jpeg|gif|svg|webp)$":
       "<rootDir>/__tests__/__mocks__/file.mock.ts",
-    "^@mfe/shared$": "<rootDir>/../shared/src/exports.ts",
-    "^@mfe/shared/(.*)$": "<rootDir>/../shared/src/$1",
-    "^@/(.*)$": "<rootDir>/src/$1",
+    "^shared/sdk$": "<rootDir>/../shared/src/exports.ts",
+    "^@shared/(.*)$": "<rootDir>/../shared/src/$1",
+    "^@container/(.*)$": "<rootDir>/src/$1",
     "^@tests/(.*)$": "<rootDir>/__tests__/$1",
   },
   transform: {

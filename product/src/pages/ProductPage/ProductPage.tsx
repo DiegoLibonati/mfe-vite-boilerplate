@@ -1,11 +1,11 @@
-import { LinkModule, ActionModule } from "@mfe/shared";
+import { LinkModule, ActionModule } from "shared/sdk";
 
 import type { JSX } from "react";
-import type { ProductPageProps } from "@/types/props";
+import type { ProductPageProps } from "@product/types/props";
 
-import SharedMfe from "@/components/SharedMfe/SharedMfe";
+import SharedMfe from "@product/components/SharedMfe/SharedMfe";
 
-import "@/pages/ProductPage/ProductPage.css";
+import "@product/pages/ProductPage/ProductPage.css";
 
 const ProductPage = ({ productId }: ProductPageProps): JSX.Element => {
   const alertProductId = (): void => {

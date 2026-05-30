@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import "@/components/DefaultLoading/DefaultLoading.css";
+import "@container/components/DefaultLoading/DefaultLoading.css";
 
 const DefaultLoading = (): JSX.Element => {
   return (

@@ -1,10 +1,10 @@
 import { Component } from "react";
 
 import type { JSX } from "react";
-import type { ErrorBoundaryProps } from "@/types/props";
-import type { ErrorBoundaryState } from "@/types/states";
+import type { ErrorBoundaryProps } from "@container/types/props";
+import type { ErrorBoundaryState } from "@container/types/states";
 
-import "@/components/ErrorBoundary/ErrorBoundary.css";
+import "@container/components/ErrorBoundary/ErrorBoundary.css";
 
 class ErrorBoundaryClass extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {

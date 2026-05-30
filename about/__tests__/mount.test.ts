@@ -1,13 +1,13 @@
 import { createApplication } from "@angular/platform-browser";
 import { createComponent } from "@angular/core";
 
-import type { MfeMountOptions } from "@mfe/shared/types/mfe";
+import type { MfeMountOptions } from "shared/sdk";
 
-import { AboutPageComponent } from "@/pages/about-page/about-page.component";
+import { AboutPageComponent } from "@about/pages/about-page/about-page.component";
 
-import { MFE_CALLBACKS } from "@/tokens/mfe-callbacks.token";
+import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
-import { mount, unmount } from "@/mount";
+import { mount, unmount } from "@about/mount";
 
 const mockAttachView = jest.fn();
 const mockDestroy = jest.fn();
@@ -22,7 +22,7 @@ const mockComponentRef = {
   hostView: mockHostView,
 };
 
-jest.mock("@mfe/shared", () => ({
+jest.mock("shared/sdk", () => ({
   __esModule: true,
   LinkModule: { mount: jest.fn(), unmount: jest.fn() },
 }));

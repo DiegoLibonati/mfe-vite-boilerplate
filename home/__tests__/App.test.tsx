@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
 
-import App from "@/App";
+import App from "@home/App";
 
-jest.mock("@mfe/shared", () => {
-  const actual: Record<string, unknown> = jest.requireActual("@mfe/shared");
+jest.mock("shared/sdk", () => {
+  const actual: Record<string, unknown> = jest.requireActual("shared/sdk");
   return {
     ...actual,
     LinkModule: { mount: jest.fn(), unmount: jest.fn() },

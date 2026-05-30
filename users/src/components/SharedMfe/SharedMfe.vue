@@ -1,8 +1,8 @@
 <script setup lang="ts" generic="P extends Record<string, unknown>">
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 
-import type { MfeCallbacks } from "@mfe/shared/types";
-import type { SharedMfeProps } from "@/types/props";
+import type { MfeCallbacks } from "shared/sdk";
+import type { SharedMfeProps } from "@users/types/props";
 
 const props = defineProps<SharedMfeProps<P>>();
 

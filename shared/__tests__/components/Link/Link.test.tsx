@@ -2,11 +2,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RenderResult } from "@testing-library/react";
-import type { LinkProps } from "@mfe/shared/types/props";
+import type { LinkProps } from "@shared/types/props";
 
-import Link from "@mfe/shared/components/Link/Link";
+import Link from "@shared/components/Link/Link";
 
-import { InheritedProvider } from "@mfe/shared/contexts/InheritedContext/InheritedProvider";
+import { InheritedProvider } from "@shared/contexts/InheritedContext/InheritedProvider";
 
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
 

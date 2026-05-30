@@ -1,4 +1,4 @@
-import type { Envs } from "@/types/envs";
+import type { Envs } from "@product/types/envs";
 
 const envs: Envs = {
   appName: import.meta.env.VITE_APP_NAME as string,

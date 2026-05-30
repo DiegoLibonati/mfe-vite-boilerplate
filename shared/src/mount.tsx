@@ -3,11 +3,11 @@ import { createRoot } from "react-dom/client";
 
 import type { ComponentType } from "react";
 import type { Root } from "react-dom/client";
-import type { MfeMountOptions } from "@mfe/shared/types/mfe";
+import type { MfeMountOptions } from "@shared/types/mfe";
 
-import MfeErrorBoundary from "@mfe/shared/components/MfeErrorBoundary/MfeErrorBoundary";
+import MfeErrorBoundary from "@shared/components/MfeErrorBoundary/MfeErrorBoundary";
 
-import { InheritedProvider } from "@mfe/shared/contexts/InheritedContext/InheritedProvider";
+import { InheritedProvider } from "@shared/contexts/InheritedContext/InheritedProvider";
 
 const roots = new Map<HTMLElement, Root>();
 

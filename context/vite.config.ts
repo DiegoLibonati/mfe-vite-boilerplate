@@ -1,5 +1,5 @@
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import { federation } from "@module-federation/vite";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
@@ -8,6 +8,7 @@ import prefixSelector from "postcss-prefix-selector";
 import type { UserConfig } from "vite";
 
 export default defineConfig(({ mode }): UserConfig => {
+  const env = loadEnv(mode, process.cwd(), "VITE_");
   const isDev = mode === "development";
 
   return {
@@ -17,6 +18,13 @@ export default defineConfig(({ mode }): UserConfig => {
         filename: "remoteEntry.js",
         exposes: {
           "./ContextApp": "./src/mount.tsx",
+        },
+        remotes: {
+          shared: {
+            type: "module",
+            name: "shared",
+            entry: env.VITE_REMOTE_SHARED_URL || "http://localhost:4000/remoteEntry.js",
+          },
         },
         shared: {
           react: { singleton: true, requiredVersion: "^19.0.0" },
@@ -32,21 +40,27 @@ export default defineConfig(({ mode }): UserConfig => {
         plugins: [
           prefixSelector({
             prefix: '[data-mfe="context"]',
-            transform: (prefix, selector, prefixedSelector) =>
-              [":root", "html", "body"].includes(selector) ? prefix : prefixedSelector,
+            transform: (prefix, selector, prefixedSelector) => {
+              // The universal reset (`*`, `*::before`, `*::after`) must stay GLOBAL so it
+              // reaches the real <html>/<body>. Scoped as `[data-mfe="x"] *` it only matches
+              // the host's descendants, leaving the browser's default <body> margin in place —
+              // that's the white gutter around the standalone MFE. The reset is idempotent, so
+              // re-applying it globally inside the container is harmless.
+              if (selector.startsWith("*")) return selector;
+              // Page-level selectors style the MFE host element itself, not the real document,
+              // so the MFE's cosmetic styles stay scoped when embedded in the container.
+              if ([":root", "html", "body"].includes(selector)) return prefix;
+              return prefixedSelector;
+            },
           }),
         ],
       },
     },
     resolve: {
       alias: [
-        {
-          find: /^@mfe\/shared$/,
-          replacement: path.resolve(import.meta.dirname, "../shared/src/exports.ts"),
-        },
-        { find: "@mfe/shared", replacement: path.resolve(import.meta.dirname, "../shared/src") },
+        { find: "@shared", replacement: path.resolve(import.meta.dirname, "../shared/src") },
         { find: "@tests", replacement: path.resolve(import.meta.dirname, "./__tests__") },
-        { find: "@", replacement: path.resolve(import.meta.dirname, "./src") },
+        { find: "@context", replacement: path.resolve(import.meta.dirname, "./src") },
       ],
     },
     server: {

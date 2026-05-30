@@ -1,11 +1,11 @@
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
 import { screen } from "@testing-library/dom";
 
-import type { SharedComponentModule } from "@mfe/shared/types/mfe";
+import type { SharedComponentModule } from "shared/sdk";
 
-import { AboutPageComponent } from "@/pages/about-page/about-page.component";
+import { AboutPageComponent } from "@about/pages/about-page/about-page.component";
 
-import { MFE_CALLBACKS } from "@/tokens/mfe-callbacks.token";
+import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
 import { resolveAngularTemplates } from "@tests/__mocks__/resolve-templates.mock";
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
@@ -17,7 +17,7 @@ interface RenderResult {
 
 let mockLinkMount: jest.Mock;
 
-jest.mock("@mfe/shared", () => ({
+jest.mock("shared/sdk", () => ({
   __esModule: true,
   LinkModule: {
     mount: jest.fn(),
@@ -26,7 +26,7 @@ jest.mock("@mfe/shared", () => ({
 }));
 
 beforeAll(async () => {
-  const { LinkModule } = await import("@mfe/shared");
+  const { LinkModule } = await import("shared/sdk");
   mockLinkMount = (LinkModule as unknown as SharedComponentModule).mount as jest.Mock;
   await resolveAngularTemplates();
 });

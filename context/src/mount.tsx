@@ -1,10 +1,10 @@
-import { mount as sharedMount, unmount } from "@mfe/shared";
+import { mount as sharedMount, unmount } from "shared/sdk";
 
-import type { MfeMountOptions } from "@mfe/shared/types";
+import type { MfeMountOptions } from "shared/sdk";
 
-import App from "@/App";
+import App from "@context/App";
 
-import "@/index.css";
+import "@context/index.css";
 
 const mount = (container: HTMLElement, options: MfeMountOptions): void => {
   container.dataset.mfe = "context";

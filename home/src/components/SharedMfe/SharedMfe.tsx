@@ -1,10 +1,10 @@
 import { useRef, useEffect } from "react";
-import { useInheritedContext } from "@mfe/shared";
+import { useInheritedContext } from "shared/sdk";
 
 import type { JSX } from "react";
-import type { SharedMfeProps } from "@/types/props";
+import type { SharedMfeProps } from "@home/types/props";
 
-import "@/components/SharedMfe/SharedMfe.css";
+import "@home/components/SharedMfe/SharedMfe.css";
 
 const SharedMfe = <P,>({ module, componentProps }: SharedMfeProps<P>): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);

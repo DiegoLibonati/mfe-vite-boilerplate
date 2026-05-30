@@ -1,13 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { InheritedProvider } from "@mfe/shared";
+import { InheritedProvider } from "shared/sdk";
 
 import type { RenderResult } from "@testing-library/react";
-import type { MfeCallbacks } from "@mfe/shared/types";
+import type { MfeCallbacks } from "shared/sdk";
 
-import ContextPage from "@/pages/ContextPage/ContextPage";
+import ContextPage from "@context/pages/ContextPage/ContextPage";
 
-import { CounterProvider } from "@/contexts/CounterContext/CounterProvider";
+import { CounterProvider } from "@context/contexts/CounterContext/CounterProvider";
 
 const renderPage = (): RenderResult =>
   render(

@@ -29,10 +29,10 @@ export default defineConfig(({ mode }): UserConfig => {
             name: "users",
             entry: env.VITE_REMOTE_USERS_URL || "http://localhost:3030/remoteEntry.js",
           },
-          notfound: {
+          "not-found": {
             type: "module",
-            name: "notfound",
-            entry: env.VITE_REMOTE_NOTFOUND_URL || "http://localhost:3040/remoteEntry.js",
+            name: "not-found",
+            entry: env.VITE_REMOTE_NOT_FOUND_URL || "http://localhost:3040/remoteEntry.js",
           },
           product: {
             type: "module",
@@ -56,13 +56,9 @@ export default defineConfig(({ mode }): UserConfig => {
     ],
     resolve: {
       alias: [
-        {
-          find: /^@mfe\/shared$/,
-          replacement: path.resolve(import.meta.dirname, "../shared/src/exports.ts"),
-        },
-        { find: "@mfe/shared", replacement: path.resolve(import.meta.dirname, "../shared/src") },
+        { find: "@shared", replacement: path.resolve(import.meta.dirname, "../shared/src") },
         { find: "@tests", replacement: path.resolve(import.meta.dirname, "./__tests__") },
-        { find: "@", replacement: path.resolve(import.meta.dirname, "./src") },
+        { find: "@container", replacement: path.resolve(import.meta.dirname, "./src") },
       ],
     },
     server: {

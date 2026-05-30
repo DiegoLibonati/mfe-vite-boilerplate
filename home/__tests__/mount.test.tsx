@@ -1,13 +1,13 @@
-import * as mfeShared from "@mfe/shared";
+import * as mfeShared from "shared/sdk";
 
-import type { MfeMountOptions } from "@mfe/shared/types/mfe";
+import type { MfeMountOptions } from "shared/sdk";
 
-import App from "@/App";
+import App from "@home/App";
 
-import { mount, unmount } from "@/mount";
+import { mount, unmount } from "@home/mount";
 
-jest.mock("@mfe/shared", () => {
-  const actual: Record<string, unknown> = jest.requireActual("@mfe/shared");
+jest.mock("shared/sdk", () => {
+  const actual: Record<string, unknown> = jest.requireActual("shared/sdk");
   return {
     ...actual,
     mount: jest.fn(),

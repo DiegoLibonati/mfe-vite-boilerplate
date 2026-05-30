@@ -1,8 +1,8 @@
 import { createApp } from "vue";
 
-import App from "@/App.vue";
+import App from "@users/App.vue";
 
-import "@/index.css";
+import "@users/index.css";
 
 const app = createApp(App);
 app.provide("mfeCallbacks", {

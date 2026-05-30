@@ -1,10 +1,10 @@
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
 
-import type { SharedComponentModule } from "@mfe/shared/types/mfe";
+import type { SharedComponentModule } from "shared/sdk";
 
-import { SharedMfeComponent } from "@/components/shared-mfe/shared-mfe.component";
+import { SharedMfeComponent } from "@about/components/shared-mfe/shared-mfe.component";
 
-import { MFE_CALLBACKS } from "@/tokens/mfe-callbacks.token";
+import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
 import { resolveAngularTemplates } from "@tests/__mocks__/resolve-templates.mock";
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";

@@ -14,9 +14,9 @@ const config = {
     "^react/(.*)$": "<rootDir>/node_modules/react/$1",
     "^react-dom$": "<rootDir>/node_modules/react-dom",
     "^react-dom/(.*)$": "<rootDir>/node_modules/react-dom/$1",
-    "^@mfe/shared$": "<rootDir>/../shared/src/exports.ts",
-    "^@mfe/shared/(.*)$": "<rootDir>/../shared/src/$1",
-    "^@/(.*)$": "<rootDir>/src/$1",
+    "^shared/sdk$": "<rootDir>/../shared/src/exports.ts",
+    "^@shared/(.*)$": "<rootDir>/../shared/src/$1",
+    "^@context/(.*)$": "<rootDir>/src/$1",
     "^@tests/(.*)$": "<rootDir>/__tests__/$1",
   },
   transform: {

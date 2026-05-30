@@ -1,9 +1,5 @@
-import type { Envs } from "@/types/envs";
+import type { Envs } from "@home/types/envs";
 
 export const mockEnvs: Envs = {
-  appName: false,
-};
-
-export const mockEnvsWithRedirect: Envs = {
-  appName: true,
+  appName: "home",
 };

@@ -1,8 +1,8 @@
 import { bootstrapApplication } from "@angular/platform-browser";
 
-import { AboutPageComponent } from "@/pages/about-page/about-page.component";
+import { AboutPageComponent } from "@about/pages/about-page/about-page.component";
 
-import { MFE_CALLBACKS } from "@/tokens/mfe-callbacks.token";
+import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
 let bootstrapCallComponent: unknown;
 let bootstrapCallConfig: Record<string, unknown>;
@@ -12,7 +12,7 @@ jest.mock("@angular/platform-browser", () => {
   return { ...actual, bootstrapApplication: jest.fn().mockReturnValue(Promise.resolve()) };
 });
 
-jest.mock("@mfe/shared", () => ({
+jest.mock("shared/sdk", () => ({
   __esModule: true,
   LinkModule: { mount: jest.fn(), unmount: jest.fn() },
 }));
@@ -23,7 +23,7 @@ describe("bootstrap", () => {
     root.id = "root";
     document.body.appendChild(root);
 
-    await import("@/bootstrap");
+    await import("@about/bootstrap");
 
     const callArgs = (bootstrapApplication as jest.Mock).mock.calls[0];
     bootstrapCallComponent = callArgs[0];

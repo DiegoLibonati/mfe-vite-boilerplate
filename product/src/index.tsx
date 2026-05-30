@@ -1,1 +1,1 @@
-void import("@/bootstrap");
+void import("@product/bootstrap");

@@ -1,8 +1,8 @@
 import { useContext } from "react";
 
-import type { UseCounterContext } from "@/types/hooks";
+import type { UseCounterContext } from "@context/types/hooks";
 
-import { CounterContext } from "@/contexts/CounterContext/CounterContext";
+import { CounterContext } from "@context/contexts/CounterContext/CounterContext";
 
 export const useCounterContext = (): UseCounterContext => {
   const context = useContext(CounterContext);

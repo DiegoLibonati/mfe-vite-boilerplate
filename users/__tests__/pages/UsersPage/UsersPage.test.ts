@@ -2,10 +2,10 @@ import { render, screen, within } from "@testing-library/vue";
 import { vi } from "vitest";
 
 import type { RenderResult } from "@testing-library/vue";
-import type { User } from "@mfe/shared/types";
-import type { UsersPageProps } from "@/types/props";
+import type { User } from "shared/sdk";
+import type { UsersPageProps } from "@users/types/props";
 
-import UsersPage from "@/pages/UsersPage/UsersPage.vue";
+import UsersPage from "@users/pages/UsersPage/UsersPage.vue";
 
 import { mockUsers } from "@tests/__mocks__/users.mock";
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
@@ -20,7 +20,7 @@ const { mockLinkModuleMountSpy, mockLinkModuleUnmountSpy, mockLinkModule } = vi.
   };
 });
 
-vi.mock("@mfe/shared", () => ({
+vi.mock("shared/sdk", () => ({
   LinkModule: mockLinkModule,
 }));
 

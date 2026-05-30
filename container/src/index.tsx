@@ -1,1 +1,1 @@
-void import("@/bootstrap");
+void import("@container/bootstrap");

@@ -1,5 +1,5 @@
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import { transform } from "esbuild";
 import angular from "@analogjs/vite-plugin-angular";
 import { federation } from "@module-federation/vite";
@@ -48,6 +48,7 @@ export const tsTransformPlugin = (): Plugin => ({
 });
 
 export default defineConfig(({ mode }): AboutConfig => {
+  const env = loadEnv(mode, process.cwd(), "VITE_");
   const isDev = mode === "development";
 
   return {
@@ -57,6 +58,13 @@ export default defineConfig(({ mode }): AboutConfig => {
         filename: "remoteEntry.js",
         exposes: {
           "./AboutApp": "./src/mount.ts",
+        },
+        remotes: {
+          shared: {
+            type: "module",
+            name: "shared",
+            entry: env.VITE_REMOTE_SHARED_URL || "http://localhost:4000/remoteEntry.js",
+          },
         },
         shared: {
           react: { singleton: true, requiredVersion: "^19.0.0" },
@@ -74,8 +82,18 @@ export default defineConfig(({ mode }): AboutConfig => {
         plugins: [
           prefixSelector({
             prefix: '[data-mfe="about"]',
-            transform: (prefix, selector, prefixedSelector) =>
-              [":root", "html", "body"].includes(selector) ? prefix : prefixedSelector,
+            transform: (prefix, selector, prefixedSelector) => {
+              // The universal reset (`*`, `*::before`, `*::after`) must stay GLOBAL so it
+              // reaches the real <html>/<body>. Scoped as `[data-mfe="x"] *` it only matches
+              // the host's descendants, leaving the browser's default <body> margin in place —
+              // that's the white gutter around the standalone MFE. The reset is idempotent, so
+              // re-applying it globally inside the container is harmless.
+              if (selector.startsWith("*")) return selector;
+              // Page-level selectors style the MFE host element itself, not the real document,
+              // so the MFE's cosmetic styles stay scoped when embedded in the container.
+              if ([":root", "html", "body"].includes(selector)) return prefix;
+              return prefixedSelector;
+            },
           }),
         ],
       },
@@ -83,13 +101,9 @@ export default defineConfig(({ mode }): AboutConfig => {
     resolve: {
       mainFields: ["module"],
       alias: [
-        {
-          find: /^@mfe\/shared$/,
-          replacement: path.resolve(import.meta.dirname, "../shared/src/exports.ts"),
-        },
-        { find: "@mfe/shared", replacement: path.resolve(import.meta.dirname, "../shared/src") },
+        { find: "@shared", replacement: path.resolve(import.meta.dirname, "../shared/src") },
         { find: "@tests", replacement: path.resolve(import.meta.dirname, "./__tests__") },
-        { find: "@", replacement: path.resolve(import.meta.dirname, "./src") },
+        { find: "@about", replacement: path.resolve(import.meta.dirname, "./src") },
       ],
     },
     server: {

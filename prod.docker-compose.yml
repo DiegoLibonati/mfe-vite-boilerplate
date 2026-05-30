@@ -7,9 +7,10 @@ services:
         VITE_REMOTE_HOME_URL: ${VITE_REMOTE_HOME_URL:-/mfe/home/remoteEntry.js}
         VITE_REMOTE_ABOUT_URL: ${VITE_REMOTE_ABOUT_URL:-/mfe/about/remoteEntry.js}
         VITE_REMOTE_USERS_URL: ${VITE_REMOTE_USERS_URL:-/mfe/users/remoteEntry.js}
-        VITE_REMOTE_NOTFOUND_URL: ${VITE_REMOTE_NOTFOUND_URL:-/mfe/notfound/remoteEntry.js}
+        VITE_REMOTE_NOT_FOUND_URL: ${VITE_REMOTE_NOT_FOUND_URL:-/mfe/not-found/remoteEntry.js}
         VITE_REMOTE_PRODUCT_URL: ${VITE_REMOTE_PRODUCT_URL:-/mfe/product/remoteEntry.js}
         VITE_REMOTE_CONTEXT_URL: ${VITE_REMOTE_CONTEXT_URL:-/mfe/context/remoteEntry.js}
+        VITE_REMOTE_SHARED_URL: ${VITE_REMOTE_SHARED_URL:-/mfe/shared/remoteEntry.js}
     env_file:
       - .env
     restart: always
@@ -18,10 +19,11 @@ services:
     networks:
       - boilerplate-net
     depends_on:
+      - shared
       - home
       - about
       - users
-      - notfound
+      - not-found
       - product
       - context
 
@@ -29,6 +31,8 @@ services:
     build:
       context: .
       dockerfile: home/Dockerfile.production
+      args:
+        VITE_REMOTE_SHARED_URL: ${VITE_REMOTE_SHARED_URL:-/mfe/shared/remoteEntry.js}
     restart: always
     networks:
       - boilerplate-net
@@ -37,6 +41,8 @@ services:
     build:
       context: .
       dockerfile: about/Dockerfile.production
+      args:
+        VITE_REMOTE_SHARED_URL: ${VITE_REMOTE_SHARED_URL:-/mfe/shared/remoteEntry.js}
     restart: always
     networks:
       - boilerplate-net
@@ -45,14 +51,18 @@ services:
     build:
       context: .
       dockerfile: users/Dockerfile.production
+      args:
+        VITE_REMOTE_SHARED_URL: ${VITE_REMOTE_SHARED_URL:-/mfe/shared/remoteEntry.js}
     restart: always
     networks:
       - boilerplate-net
 
-  notfound:
+  not-found:
     build:
       context: .
-      dockerfile: notfound/Dockerfile.production
+      dockerfile: not-found/Dockerfile.production
+      args:
+        VITE_REMOTE_SHARED_URL: ${VITE_REMOTE_SHARED_URL:-/mfe/shared/remoteEntry.js}
     restart: always
     networks:
       - boilerplate-net
@@ -61,6 +71,8 @@ services:
     build:
       context: .
       dockerfile: product/Dockerfile.production
+      args:
+        VITE_REMOTE_SHARED_URL: ${VITE_REMOTE_SHARED_URL:-/mfe/shared/remoteEntry.js}
     restart: always
     networks:
       - boilerplate-net
@@ -69,6 +81,16 @@ services:
     build:
       context: .
       dockerfile: context/Dockerfile.production
+      args:
+        VITE_REMOTE_SHARED_URL: ${VITE_REMOTE_SHARED_URL:-/mfe/shared/remoteEntry.js}
+    restart: always
+    networks:
+      - boilerplate-net
+
+  shared:
+    build:
+      context: .
+      dockerfile: shared/Dockerfile.production
     restart: always
     networks:
       - boilerplate-net

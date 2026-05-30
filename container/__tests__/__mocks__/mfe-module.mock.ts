@@ -1,4 +1,4 @@
-import type { MfeModule } from "@mfe/shared/types";
+import type { MfeModule } from "shared/sdk";
 
 export const mockMfeModule: jest.Mocked<MfeModule> = {
   mount: jest.fn(),

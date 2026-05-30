@@ -1,8 +1,9 @@
-export { default as Link } from "@mfe/shared/components/Link/Link";
-export { default as Action } from "@mfe/shared/components/Action/Action";
-export { InheritedProvider } from "@mfe/shared/contexts/InheritedContext/InheritedProvider";
-export { InheritedContext } from "@mfe/shared/contexts/InheritedContext/InheritedContext";
-export { useInheritedContext } from "@mfe/shared/hooks/useInheritedContext";
-export { mount, unmount } from "@mfe/shared/mount";
-export * as LinkModule from "@mfe/shared/components/Link/mount";
-export * as ActionModule from "@mfe/shared/components/Action/mount";
+export { default as Link } from "@shared/components/Link/Link";
+export { default as Action } from "@shared/components/Action/Action";
+export { InheritedProvider } from "@shared/contexts/InheritedContext/InheritedProvider";
+export { useInheritedContext } from "@shared/hooks/useInheritedContext";
+export { mount, unmount } from "@shared/mount";
+export * as LinkModule from "@shared/components/Link/mount";
+export * as ActionModule from "@shared/components/Action/mount";
+
+export type * from "@shared/types";

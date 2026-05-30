@@ -1,13 +1,13 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 
 import type { JSX } from "react";
-import type { MfeModule } from "@mfe/shared/types";
-import type { RemoteMfeProps } from "@/types/props";
-import type { RemoteMfeState } from "@/types/states";
+import type { MfeModule } from "shared/sdk";
+import type { RemoteMfeProps } from "@container/types/props";
+import type { RemoteMfeState } from "@container/types/states";
 
-import DefaultLoading from "@/components/DefaultLoading/DefaultLoading";
+import DefaultLoading from "@container/components/DefaultLoading/DefaultLoading";
 
-import "@/components/RemoteMfe/RemoteMfe.css";
+import "@container/components/RemoteMfe/RemoteMfe.css";
 
 const INITIAL_STATE: RemoteMfeState = { status: "loading", error: null };
 

@@ -15,9 +15,9 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 **What it includes:**
 
 - **Vite 7 + `@module-federation/vite`** — every package is an independent Vite app with instant dev server startup and fast HMR. The container is the host; the rest are remotes exposed as ES modules over `remoteEntry.js`.
-- **Cross-framework remotes** — `home`, `notfound`, `product`, `context` (React 19), `about` (Angular 19 via `@analogjs/vite-plugin-angular`), and `users` (Vue 3). All of them implement the same mount contract and are loaded uniformly by the host.
+- **Cross-framework remotes** — `home`, `not-found`, `product`, `context` (React 19), `about` (Angular 19 via `@analogjs/vite-plugin-angular`), and `users` (Vue 3). All of them implement the same mount contract and are loaded uniformly by the host.
 - **Universal mount contract** — every remote exposes `{ mount(container, options), unmount(container) }`. The host mounts a remote into a plain `HTMLElement` and tears it down on route change, regardless of the underlying framework.
-- **`shared` package** — centralizes framework-agnostic code (domain types, CSS variables/reset) and React building blocks (`Link`, `Action`, `InheritedProvider`, `useInheritedContext`, the `mount`/`unmount` factory, and `LinkModule`/`ActionModule` component mounts). Consumed via the `@mfe/shared` alias, not as a running server.
+- **`shared` SDK remote** — a federated remote (port `4000`) that centralizes framework-agnostic code (domain types, CSS variables/reset) and React building blocks (`Link`, `Action`, `InheritedProvider`, `useInheritedContext`, the `mount`/`unmount` factory, and `LinkModule`/`ActionModule` component mounts). It exposes them as `./sdk` over `remoteEntry.js`; every remote declares `shared` in its `remotes` and imports the public API from `shared/sdk` at runtime, so the shared code (and React itself) loads once across the whole app. Source files inside a package resolve shared modules through the `@shared/*` path alias.
 - **Cross-MFE communication** — remotes never import the host. They receive `callbacks` at mount time (`onNavigate` for routing, optional `onEvent` for events). The `context` remote demonstrates a counter that emits `MfeCounterChangeEvent` up to the host; the `users` remote receives a `User[]` array the host fetched from an API.
 - **Shared singletons** — `react`, `react-dom`, `react-router-dom`, and `vue` are negotiated as singletons across remotes via Module Federation, so they load once.
 - **Async bootstrap pattern** — each remote follows `index → bootstrap` so Module Federation can negotiate shared dependencies before the app renders, and each remote can also run **standalone** (its own `index.html` + `bootstrap`).
@@ -50,7 +50,7 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 
 ## Libraries Used
 
-### Host & React remotes (`container`, `home`, `notfound`, `product`, `context`)
+### Host & React remotes (`container`, `home`, `not-found`, `product`, `context`)
 
 #### Dependencies
 
@@ -141,20 +141,20 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 "vue-tsc": "^2.2.0"
 ```
 
-### Shared library (`@mfe/shared`)
+### Shared SDK remote (`shared`)
 
-Consumed via the `@mfe/shared` alias. Declares `react`/`react-dom` as peer dependencies and is built as an ES library (`src/exports.ts` + `src/types/index.ts`).
+Built with `@module-federation/vite` as a remote that **exposes its public API as `./sdk`** (`src/exports.ts`) over `remoteEntry.js`. Consumers import it at runtime as `shared/sdk` and declare it in their own `remotes` (default entry `http://localhost:4000/remoteEntry.js`, overridable via `VITE_REMOTE_SHARED_URL`); `react`/`react-dom` are negotiated as shared singletons. Like the other remotes it uses `vite-plugin-css-injected-by-js` + `postcss-prefix-selector` for CSS loading/isolation (scoped under `[data-mfe="shared"]`), and it compiles JSX with esbuild's automatic runtime instead of `@vitejs/plugin-react` — the React Fast Refresh preamble would otherwise break the barrel when it is loaded into a Vue/Angular host. Inside any package, source files resolve shared modules through the `@shared/*` path alias.
 
 ## Getting Started
 
-This is a **monorepo of independent packages** — there is no root `package.json`. Each package (`container`, `shared`, `home`, `about`, `users`, `notfound`, `product`, `context`) installs and runs on its own.
+This is a **monorepo of independent packages** — there is no root `package.json`. Each package (`container`, `shared`, `home`, `about`, `users`, `not-found`, `product`, `context`) installs and runs on its own.
 
 1. Clone the repository.
 2. Navigate to the project folder.
 3. Install dependencies in **every** package. For example:
 
    ```bash
-   for d in shared container home about users notfound product context; do
+   for d in shared container home about users not-found product context; do
      (cd "$d" && npm install)
    done
    ```
@@ -169,19 +169,20 @@ This is a **monorepo of independent packages** — there is no root `package.jso
    # ...repeat per package
    ```
 
-5. Start the remotes first, then the host. Each command runs from inside its package folder:
+5. Start `shared` first (every remote loads its SDK at runtime), then the rest of the remotes, then the host. Each command runs from inside its package folder:
 
    | Package     | Command       | Dev URL                 |
    | ----------- | ------------- | ----------------------- |
+   | `shared`    | `npm run dev` | `http://localhost:4000` |
    | `home`      | `npm run dev` | `http://localhost:3010` |
    | `about`     | `npm run dev` | `http://localhost:3020` |
    | `users`     | `npm run dev` | `http://localhost:3030` |
-   | `notfound`  | `npm run dev` | `http://localhost:3040` |
+   | `not-found` | `npm run dev` | `http://localhost:3040` |
    | `product`   | `npm run dev` | `http://localhost:3050` |
    | `context`   | `npm run dev` | `http://localhost:3060` |
    | `container` | `npm run dev` | `http://localhost:3000` |
 
-The host application runs at `http://localhost:3000` and lazy-loads each remote's `remoteEntry.js` on navigation. `shared` does not need a running server — it is consumed through the `@mfe/shared` path alias. (It does ship a standalone dev playground on port `4000` for working on shared components in isolation.)
+The host application runs at `http://localhost:3000` and lazy-loads each remote's `remoteEntry.js` on navigation. The `shared` SDK remote runs on port `4000`; every other remote fetches its `remoteEntry.js` (imported as `shared/sdk`) at runtime, so it must be up before the remotes. `shared` also serves a standalone dev playground on the same port for working on shared components in isolation.
 
 ### Pre-Commit for Development
 
@@ -234,9 +235,10 @@ Environment variables are parsed and typed once per package in `src/constants/en
 | `VITE_REMOTE_HOME_URL`              | URL of the `home` remote `remoteEntry.js`.                                         |
 | `VITE_REMOTE_ABOUT_URL`             | URL of the `about` remote `remoteEntry.js`.                                        |
 | `VITE_REMOTE_USERS_URL`             | URL of the `users` remote `remoteEntry.js`.                                        |
-| `VITE_REMOTE_NOTFOUND_URL`          | URL of the `notfound` remote `remoteEntry.js`.                                     |
+| `VITE_REMOTE_NOT_FOUND_URL`         | URL of the `not-found` remote `remoteEntry.js`.                                    |
 | `VITE_REMOTE_PRODUCT_URL`           | URL of the `product` remote `remoteEntry.js`.                                      |
 | `VITE_REMOTE_CONTEXT_URL`           | URL of the `context` remote `remoteEntry.js`.                                      |
+| `VITE_REMOTE_SHARED_URL`            | URL of the `shared` SDK remote `remoteEntry.js`.                                   |
 | `VITE_API_URL`                      | Upstream API proxied at `/api/users`.                                              |
 | `WATCHPACK_POLLING`                 | Enable file-watch polling (useful inside Docker).                                  |
 
@@ -248,20 +250,22 @@ VITE_APP_NAME=container
 VITE_REMOTE_HOME_URL=http://localhost:3010/remoteEntry.js
 VITE_REMOTE_ABOUT_URL=http://localhost:3020/remoteEntry.js
 VITE_REMOTE_USERS_URL=http://localhost:3030/remoteEntry.js
-VITE_REMOTE_NOTFOUND_URL=http://localhost:3040/remoteEntry.js
+VITE_REMOTE_NOT_FOUND_URL=http://localhost:3040/remoteEntry.js
 VITE_REMOTE_PRODUCT_URL=http://localhost:3050/remoteEntry.js
 VITE_REMOTE_CONTEXT_URL=http://localhost:3060/remoteEntry.js
+VITE_REMOTE_SHARED_URL=http://localhost:4000/remoteEntry.js
 VITE_API_URL=https://jsonplaceholder.typicode.com
 
 WATCHPACK_POLLING=true
 ```
 
-### Remotes (`home`, `about`, `users`, `notfound`, `product`, `context`)
+### Remotes (`shared`, `home`, `about`, `users`, `not-found`, `product`, `context`)
 
-| Key                 | Description                                       |
-| ------------------- | ------------------------------------------------- |
-| `VITE_APP_NAME`     | Display name when the remote runs standalone.     |
-| `WATCHPACK_POLLING` | Enable file-watch polling (useful inside Docker). |
+| Key                      | Description                                                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_APP_NAME`          | Display name when the remote runs standalone.                                                                                       |
+| `VITE_REMOTE_SHARED_URL` | URL of the `shared` SDK remote `remoteEntry.js`, consumed by the framework remotes (not `shared` itself). Optional — defaults to `http://localhost:4000/remoteEntry.js`. |
+| `WATCHPACK_POLLING`      | Enable file-watch polling (useful inside Docker).                                                                                   |
 
 Example remote `.env`:
 
@@ -289,9 +293,9 @@ mfe-vite-boilerplate/
 ├── LICENSE
 ├── README.md
 │
-├── shared/                         # Framework-agnostic + React shared library (@mfe/shared)
+├── shared/                         # Framework-agnostic + React SDK remote — exposes ./sdk (port 4000)
 │   └── src/
-│       ├── exports.ts              # Public API barrel
+│       ├── exports.ts              # Public API barrel (exposed as ./sdk → imported as shared/sdk)
 │       ├── mount.tsx               # Universal React app mount/unmount factory
 │       ├── components/             # Link, Action, MfeErrorBoundary (+ component mounts)
 │       ├── contexts/               # InheritedContext / InheritedProvider
@@ -313,7 +317,7 @@ mfe-vite-boilerplate/
 ├── home/                           # React remote — landing page (port 3010, exposes ./HomeApp)
 ├── about/                          # Angular 19 remote (port 3020, exposes ./AboutApp)
 ├── users/                          # Vue 3 remote (port 3030, exposes ./UsersApp)
-├── notfound/                       # React remote — 404 page (port 3040, exposes ./NotFoundApp)
+├── not-found/                      # React remote — 404 page (port 3040, exposes ./NotFoundApp)
 ├── product/                        # React remote — product detail (port 3050, exposes ./ProductApp)
 └── context/                        # React remote — counter/event demo (port 3060, exposes ./ContextApp)
 ```
@@ -344,9 +348,9 @@ Every package follows the same internal shape:
 
 | Folder / File       | Description                                                              |
 | ------------------- | ------------------------------------------------------------------------ |
-| `shared/`           | Code shared across all packages, exposed through the `@mfe/shared` alias |
+| `shared/`           | SDK remote — exposes shared code as `./sdk`; source resolved via `@shared/*`         |
 | `container/`        | The host that declares remotes, owns routing, and mounts each MFE        |
-| `home`/`notfound`/… | Remote MFEs — independently buildable and deployable                     |
+| `home`/`not-found`/…| Remote MFEs — independently buildable and deployable                     |
 | `<pkg>/src/mount.*` | The federated entry implementing the `MfeModule` contract                |
 | `<pkg>/src/types/`  | TypeScript interfaces and types, split by concern                        |
 | `<pkg>/__tests__/`  | Tests mirroring `src/`, grouped by source category                       |
@@ -363,11 +367,19 @@ The folder structure above maps directly onto the architectural layers described
                           │  router · RemoteMfe loader│
                           └──────────────┬────────────┘
         lazy import remoteEntry.js  ──────┼──────  pass { callbacks, ...mountData }
-   ┌───────────┬───────────┬─────────────┼─────────────┬───────────┬───────────┐
-   ▼           ▼           ▼             ▼             ▼           ▼           ▼
- home       about       users        notfound      product     context     (shared)
- React      Angular     Vue 3        React         React       React     @mfe/shared
- :3010      :3020       :3030        :3040         :3050       :3060      alias only
+   ┌───────────┬───────────┬─────────────┼─────────────┬───────────┐
+   ▼           ▼           ▼             ▼             ▼           ▼
+ home       about       users        not-found     product     context
+ React      Angular     Vue 3         React         React       React
+ :3010      :3020       :3030         :3040         :3050       :3060
+   └────────────┴────────── import shared/sdk ────────┴───────────┘
+                              │
+                              ▼
+                  ┌────────────────────────────────┐
+                  │  shared — SDK remote   :4000    │
+                  │  exposes ./sdk: Link, Action,   │
+                  │  mount/unmount, shared types …  │
+                  └────────────────────────────────┘
 ```
 
 The host imports nothing framework-specific from a remote — it imports a **module** that satisfies the mount contract and calls `mount`/`unmount` against a DOM node. This is what makes the architecture framework-agnostic: a React host orchestrates Angular and Vue remotes identically.
@@ -397,7 +409,7 @@ Each framework implements it natively:
 
 | Remote                                | `mount` implementation                                                                                                 | `unmount`                           |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| React (`home`, `notfound`, `context`) | `shared`'s `mount(App, container, options)` factory — wraps in `StrictMode` + `MfeErrorBoundary` + `InheritedProvider` | `root.unmount()` (queued microtask) |
+| React (`home`, `not-found`, `context`) | `shared`'s `mount(App, container, options)` factory — wraps in `StrictMode` + `MfeErrorBoundary` + `InheritedProvider` | `root.unmount()` (queued microtask) |
 | React (`product`)                     | Custom root render with `InheritedProvider` + extra `productId` prop                                                   | `root.unmount()`                    |
 | Angular (`about`)                     | `createApplication()` + `MFE_CALLBACKS` provider + `createComponent()` + `attachView()`                                | `appRef.destroy()`                  |
 | Vue (`users`)                         | `createApp(UsersPage, { users })` + `app.provide("mfeCallbacks", callbacks)`                                           | `app.unmount()`                     |
@@ -421,14 +433,15 @@ Remotes never reach into the host. Communication flows through the `callbacks` o
 
 ### Shared Package
 
-`@mfe/shared` (resolved by alias in every `vite.config.ts`, `tsconfig.base.json`, and Jest config) exports:
+`shared` is itself a **federated remote**: it exposes its public surface as `./sdk` over `remoteEntry.js`, and every remote declares `shared` in its `remotes` and imports it at runtime as `shared/sdk`. Source files within a package import shared modules through the `@shared/*` path alias instead — Vite, the TypeScript `paths`, and the Jest/Vitest configs all resolve `@shared/*` to `shared/src`. (The container only imports **types** from `shared/sdk`, which are erased at compile time, so it never loads the remote at runtime.) `shared/sdk` exports:
 
 - React components: `Link`, `Action`
-- Context primitives: `InheritedProvider`, `InheritedContext`, `useInheritedContext`
+- Context primitives: `InheritedProvider`, `useInheritedContext` (the `InheritedContext` type is re-exported via `export type * from "@shared/types"`)
 - The universal app factory: `mount`, `unmount`
 - Component-level mounts for non-React hosts: `LinkModule`, `ActionModule` (via `createComponentMount<P>`)
+- All shared types (`MfeModule`, `MfeCallbacks`, `User`, …)
 
-This lets the Angular and Vue remotes embed the same React `Link`/`Action` components by mounting them into a DOM node — the cross-framework demo.
+This lets the Angular and Vue remotes embed the same React `Link`/`Action` components by mounting them into a DOM node — the cross-framework demo. Because `react`/`react-dom` are negotiated as Module Federation singletons, the shared code and React itself load once across every remote.
 
 ### CSS Isolation & Loading
 
@@ -452,7 +465,7 @@ The container uses React Router v7 (`BrowserRouter`). `PublicRoute` wraps all ro
 | `/users`               | `users`            | Vue 3     |
 | `/context`             | `context`          | React     |
 | `/products/:productId` | `product`          | React     |
-| `/not-found`           | `notfound`         | React     |
+| `/not-found`           | `not-found`        | React     |
 | `/*`                   | redirect / 404     | —         |
 
 The catch-all redirects to `/` or `/not-found` based on `VITE_REDIRECT_IF_ROUTE_NOT_EXISTS`, making 404 behavior configurable without code changes.
@@ -520,7 +533,7 @@ For React/Vue host-style packages this runs a type-check (`tsc`/`vue-tsc`) befor
 npm run preview
 ```
 
-> Build order matters in production: remotes must be built and served first so the container can resolve each `VITE_REMOTE_*_URL`. The Docker build wires `shared` into every image and injects the remote URLs into the container at build time.
+> Build order matters in production: `shared` is built and served first (every remote fetches its `./sdk`), then the rest of the remotes, then the container so it can resolve each `VITE_REMOTE_*_URL`. The Docker build copies `shared`'s source into every remote image (for the `@shared` alias) and injects the remote URLs into the container at build time.
 
 ## Continuous Integration
 
@@ -531,7 +544,7 @@ The repository ships with a **GitHub Actions** pipeline defined in [`.github/wor
 ```
                  ┌─── PR or push to main ───┐
                  ▼                          ▼
-   For each package (shared, container, home, about, users, notfound, product, context):
+   For each package (shared, container, home, about, users, not-found, product, context):
 
    ┌──────────────────┐   ┌──────────────┐   ┌──────────────┐
    │  lint-and-audit  │──▶│    testing   │──▶│     build    │
@@ -556,7 +569,7 @@ Each job runs on `ubuntu-latest`, uses the Node version from each package's [`.n
 
 ### Docker job
 
-4. **`docker-build`** — a matrix that builds `Dockerfile.development` and `Dockerfile.production` for every package (`shared` builds dev only), tagged `mfe-<package>:dev` / `mfe-<package>:prod`. Images are built inside the runner and discarded — nothing is pushed to a registry.
+4. **`docker-build`** — a matrix that builds `Dockerfile.development` and `Dockerfile.production` for every package (including `shared`, now a remote), tagged `mfe-<package>:dev` / `mfe-<package>:prod`. Images are built inside the runner and discarded — nothing is pushed to a registry.
 
 > The pipeline is intentionally scoped to validation only — no release job, no tagging, no artifact publishing. Version management and distribution belong to the consuming project.
 
@@ -571,9 +584,9 @@ Stage 1 — builder : node:22-alpine  →  npm ci (shared + package)  →  npm r
 Stage 2 — runner  : nginx:stable-alpine  →  serves dist/ on port 8080
 ```
 
-Every image copies the `shared` package alongside the target package so the `@mfe/shared` alias resolves at build time. The container image additionally accepts the remote URLs as build args (`VITE_REMOTE_*_URL`) and bakes them into the bundle. No Node.js or source ends up in the final image — only nginx and the compiled static files.
+Every framework-remote image copies the `shared` source alongside the target package so the `@shared` alias resolves at build time, and bakes the `shared` SDK remote URL (`VITE_REMOTE_SHARED_URL`) so the bundle can fetch `shared/sdk` at runtime. The `shared` image builds itself the same way as any other remote. The container image additionally accepts every remote URL as build args (`VITE_REMOTE_*_URL`) and bakes them into the bundle. No Node.js or source ends up in the final image — only nginx and the compiled static files.
 
-In production the **container is the only public origin**. The remote services run on the internal Docker network with **no published ports**, and the container's nginx reverse-proxies their federation artifacts under `/mfe/<name>/` (e.g. the browser fetches `/mfe/home/remoteEntry.js`, which nginx forwards to `home:8080/remoteEntry.js`). The baked `VITE_REMOTE_*_URL` values are therefore same-origin paths (`/mfe/<name>/remoteEntry.js`). The browser only ever talks to the container — same origin (no CORS) — and the remotes' standalone pages are never reachable in prod (each remote serves only `remoteEntry.js` + `/assets/*` and 404s everything else). This mirrors the correct production topology where remotes are internal services behind the host, not separately browsable sites. (In dev each MFE still runs standalone on its own Vite port.)
+In production the **container is the only public origin**. The remote services — including the `shared` SDK remote — run on the internal Docker network with **no published ports**, and the container's nginx reverse-proxies their federation artifacts under `/mfe/<name>/` (e.g. the browser fetches `/mfe/home/remoteEntry.js`, which nginx forwards to `home:8080/remoteEntry.js`; a remote's bundle in turn fetches `/mfe/shared/remoteEntry.js`). The baked `VITE_REMOTE_*_URL` values are therefore same-origin paths (`/mfe/<name>/remoteEntry.js`). The browser only ever talks to the container — same origin (no CORS) — and the remotes' standalone pages are never reachable in prod (each remote serves only `remoteEntry.js` + `/assets/*` and 404s everything else). This mirrors the correct production topology where remotes are internal services behind the host, not separately browsable sites. (In dev each MFE still runs standalone on its own Vite port.)
 
 ### Build and run (Prod)
 

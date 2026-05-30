@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { LinkModule } from "@mfe/shared";
+import { LinkModule } from "shared/sdk";
 
-import type { LinkProps } from "@mfe/shared/types/props";
-import type { UsersPageProps } from "@/types/props";
+import type { LinkProps } from "shared/sdk";
+import type { UsersPageProps } from "@users/types/props";
 
-import UserCard from "@/components/UserCard/UserCard.vue";
-import SharedMfe from "@/components/SharedMfe/SharedMfe.vue";
+import UserCard from "@users/components/UserCard/UserCard.vue";
+import SharedMfe from "@users/components/SharedMfe/SharedMfe.vue";
 
 defineProps<UsersPageProps>();
 

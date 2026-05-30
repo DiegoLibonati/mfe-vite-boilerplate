@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useInheritedContext } from "@mfe/shared";
+import { useInheritedContext } from "shared/sdk";
 
 import type { JSX } from "react";
-import type { CounterState } from "@/types/states";
-import type { CounterProviderProps } from "@/types/props";
+import type { CounterState } from "@context/types/states";
+import type { CounterProviderProps } from "@context/types/props";
 
-import { CounterContext } from "@/contexts/CounterContext/CounterContext";
+import { CounterContext } from "@context/contexts/CounterContext/CounterContext";
 
 export const CounterProvider = ({ children }: CounterProviderProps): JSX.Element => {
   const inherited = useInheritedContext();

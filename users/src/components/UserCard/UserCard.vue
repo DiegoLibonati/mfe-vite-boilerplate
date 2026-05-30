@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UserCardProps } from "@/types/props";
+import type { UserCardProps } from "@users/types/props";
 
 defineProps<UserCardProps>();
 </script>

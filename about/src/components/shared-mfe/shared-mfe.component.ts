@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild, ViewEncapsulation, inject } from "@angular/core";
 
 import type { ElementRef, AfterViewInit, OnDestroy } from "@angular/core";
-import type { SharedComponentModule } from "@mfe/shared/types/mfe";
+import type { SharedComponentModule } from "shared/sdk";
 
-import { MFE_CALLBACKS } from "@/tokens/mfe-callbacks.token";
+import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
 @Component({
   selector: "app-shared-mfe",

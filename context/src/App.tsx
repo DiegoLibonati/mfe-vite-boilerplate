@@ -1,8 +1,8 @@
 import type { JSX } from "react";
 
-import ContextPage from "@/pages/ContextPage/ContextPage";
+import ContextPage from "@context/pages/ContextPage/ContextPage";
 
-import { CounterProvider } from "@/contexts/CounterContext/CounterProvider";
+import { CounterProvider } from "@context/contexts/CounterContext/CounterProvider";
 
 function App(): JSX.Element {
   return (

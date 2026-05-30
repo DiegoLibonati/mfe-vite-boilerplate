@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core";
-import { LinkModule } from "@mfe/shared";
+import { LinkModule } from "shared/sdk";
 
-import { SharedMfeComponent } from "@/components/shared-mfe/shared-mfe.component";
+import { SharedMfeComponent } from "@about/components/shared-mfe/shared-mfe.component";
 
 @Component({
   selector: "app-about-page",

@@ -1,13 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { InheritedProvider } from "@mfe/shared";
+import { InheritedProvider } from "shared/sdk";
 
 import type { Root } from "react-dom/client";
-import type { ProductMfeMountOptions } from "@/types/mfe";
+import type { ProductMfeMountOptions } from "@product/types/mfe";
 
-import App from "@/App";
+import App from "@product/App";
 
-import "@/index.css";
+import "@product/index.css";
 
 const roots = new Map<HTMLElement, Root>();
 

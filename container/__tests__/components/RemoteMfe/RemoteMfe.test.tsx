@@ -2,10 +2,10 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RenderResult } from "@testing-library/react";
-import type { MfeMountOptions } from "@mfe/shared/types";
-import type { RemoteMfeProps } from "@/types/props";
+import type { MfeMountOptions } from "shared/sdk";
+import type { RemoteMfeProps } from "@container/types/props";
 
-import RemoteMfe from "@/components/RemoteMfe/RemoteMfe";
+import RemoteMfe from "@container/components/RemoteMfe/RemoteMfe";
 
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
 import { mockMfeModule } from "@tests/__mocks__/mfe-module.mock";

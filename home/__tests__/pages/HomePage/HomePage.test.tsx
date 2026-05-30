@@ -1,15 +1,15 @@
 import { act, render, screen } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
-import type { SharedComponentModule } from "@mfe/shared/types/mfe";
+import type { SharedComponentModule } from "shared/sdk";
 
-import HomePage from "@/pages/HomePage/HomePage";
+import HomePage from "@home/pages/HomePage/HomePage";
 
 let mockLinkMount: jest.Mock;
 let mockActionMount: jest.Mock;
 
-jest.mock("@mfe/shared", () => {
-  const actual: Record<string, unknown> = jest.requireActual("@mfe/shared");
+jest.mock("shared/sdk", () => {
+  const actual: Record<string, unknown> = jest.requireActual("shared/sdk");
   return {
     ...actual,
     LinkModule: { mount: jest.fn(), unmount: jest.fn() },
@@ -20,7 +20,7 @@ jest.mock("@mfe/shared", () => {
 const renderPage = (): RenderResult => render(<HomePage />);
 
 beforeAll(async () => {
-  const { LinkModule, ActionModule } = await import("@mfe/shared");
+  const { LinkModule, ActionModule } = await import("shared/sdk");
   mockLinkMount = (LinkModule as unknown as SharedComponentModule).mount as jest.Mock;
   mockActionMount = (ActionModule as unknown as SharedComponentModule).mount as jest.Mock;
 });

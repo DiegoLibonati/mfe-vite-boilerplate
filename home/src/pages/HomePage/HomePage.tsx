@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { LinkModule, ActionModule } from "@mfe/shared";
+import { LinkModule, ActionModule } from "shared/sdk";
 
 import type { JSX } from "react";
 
-import SharedMfe from "@/components/SharedMfe/SharedMfe";
+import SharedMfe from "@home/components/SharedMfe/SharedMfe";
 
-import "@/pages/HomePage/HomePage.css";
+import "@home/pages/HomePage/HomePage.css";
 
 const HomePage = (): JSX.Element => {
   const [shouldThrow, setShouldThrow] = useState(false);

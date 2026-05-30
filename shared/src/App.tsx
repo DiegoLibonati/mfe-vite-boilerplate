@@ -1,9 +1,9 @@
 import type { JSX } from "react";
 
-import Link from "@mfe/shared/components/Link/Link";
-import Action from "@mfe/shared/components/Action/Action";
+import Link from "@shared/components/Link/Link";
+import Action from "@shared/components/Action/Action";
 
-import "@mfe/shared/App.css";
+import "@shared/App.css";
 
 function App(): JSX.Element {
   return (

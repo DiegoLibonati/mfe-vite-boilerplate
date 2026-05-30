@@ -1,10 +1,10 @@
 import { act, render, screen } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
-import type { MfeMountOptions } from "@mfe/shared/types";
-import type { ContextAppProps } from "@/types/props";
+import type { MfeMountOptions } from "shared/sdk";
+import type { ContextAppProps } from "@container/types/props";
 
-import ContextApp from "@/components/ContextApp/ContextApp";
+import ContextApp from "@container/components/ContextApp/ContextApp";
 
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
 

@@ -24,8 +24,7 @@
     "exactOptionalPropertyTypes": true,
 
     "paths": {
-      "@mfe/shared": ["./src/exports.ts"],
-      "@mfe/shared/*": ["./src/*"],
+      "@shared/*": ["./src/*"],
       "@tests/*": ["./__tests__/*"]
     }
   }

@@ -3,11 +3,11 @@ import { vi } from "vitest";
 
 import type * as Vue from "vue";
 import type { Mock } from "vitest";
-import type { UsersMfeMountOptions } from "@/types/mfe";
+import type { UsersMfeMountOptions } from "@users/types/mfe";
 
-import UsersPage from "@/pages/UsersPage/UsersPage.vue";
+import UsersPage from "@users/pages/UsersPage/UsersPage.vue";
 
-import { mount, unmount } from "@/mount";
+import { mount, unmount } from "@users/mount";
 
 interface MockApp {
   config: { errorHandler?: (error: unknown) => void };
@@ -21,7 +21,7 @@ vi.mock("vue", async () => {
   return { ...actual, createApp: vi.fn() };
 });
 
-vi.mock("@mfe/shared", () => ({
+vi.mock("shared/sdk", () => ({
   LinkModule: { mount: vi.fn(), unmount: vi.fn() },
 }));
 

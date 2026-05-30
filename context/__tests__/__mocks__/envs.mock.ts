@@ -1,4 +1,4 @@
-import type { Envs } from "@/types/envs";
+import type { Envs } from "@context/types/envs";
 
 export const mockEnvs: Envs = {
   appName: "context",

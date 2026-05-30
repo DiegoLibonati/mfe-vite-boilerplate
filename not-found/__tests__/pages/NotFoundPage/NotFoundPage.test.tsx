@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
 
-import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage";
+import NotFoundPage from "@not-found/pages/NotFoundPage/NotFoundPage";
 
 const renderPage = (): RenderResult => render(<NotFoundPage />);
 

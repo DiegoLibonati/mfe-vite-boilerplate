@@ -1,8 +1,8 @@
 import { http, HttpResponse } from "msw";
 
-import type { User } from "@mfe/shared/types";
+import type { User } from "shared/sdk";
 
-import userService from "@/services/userService";
+import userService from "@container/services/userService";
 
 import { mockMswServer } from "@tests/__mocks__/mswServer.mock";
 import { mockUser } from "@tests/__mocks__/user.mock";

@@ -1,1 +1,1 @@
-void import("@mfe/shared/bootstrap");
+void import("@shared/bootstrap");

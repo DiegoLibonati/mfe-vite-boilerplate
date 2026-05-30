@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { User } from "@mfe/shared/types";
+import type { User } from "shared/sdk";
 
-import UsersPage from "@/pages/UsersPage/UsersPage.vue";
+import UsersPage from "@users/pages/UsersPage/UsersPage.vue";
 
 const mockUsers: User[] = [
   {

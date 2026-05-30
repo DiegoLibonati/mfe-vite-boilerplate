@@ -1,5 +1,5 @@
-import type { User } from "@mfe/shared/types";
-import type { ResponseDirect } from "@/types/responses";
+import type { User } from "shared/sdk";
+import type { ResponseDirect } from "@container/types/responses";
 
 const userService = {
   getAll: async (): Promise<ResponseDirect<User[]>> => {

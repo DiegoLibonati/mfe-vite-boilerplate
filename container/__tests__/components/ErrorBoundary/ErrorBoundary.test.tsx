@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import type { JSX } from "react";
 import type { RenderResult } from "@testing-library/react";
 
-import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
+import ErrorBoundary from "@container/components/ErrorBoundary/ErrorBoundary";
 
 let shouldThrow = false;
 

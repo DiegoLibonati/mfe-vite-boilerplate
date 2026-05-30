@@ -2,7 +2,7 @@ import { vi } from "vitest";
 
 import type * as Vue from "vue";
 
-import App from "@/App.vue";
+import App from "@users/App.vue";
 
 const { mockCreateApp, mockProvide, mockMount } = vi.hoisted(() => {
   const mockProvide = vi.fn((_token: string, _value: unknown) => undefined);
@@ -22,7 +22,7 @@ vi.mock("vue", async () => {
   return { ...actual, createApp: mockCreateApp };
 });
 
-vi.mock("@mfe/shared", () => ({
+vi.mock("shared/sdk", () => ({
   LinkModule: { mount: vi.fn(), unmount: vi.fn() },
 }));
 
@@ -32,7 +32,7 @@ describe("bootstrap", () => {
     root.id = "root";
     document.body.appendChild(root);
 
-    await import("@/bootstrap");
+    await import("@users/bootstrap");
 
     createAppArg = mockCreateApp.mock.calls[0]?.[0];
     provideToken = mockProvide.mock.calls[0]?.[0];

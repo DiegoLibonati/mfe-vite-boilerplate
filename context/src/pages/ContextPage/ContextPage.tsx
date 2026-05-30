@@ -1,12 +1,12 @@
-import { LinkModule, ActionModule } from "@mfe/shared";
+import { LinkModule, ActionModule } from "shared/sdk";
 
 import type { JSX } from "react";
 
-import SharedMfe from "@/components/SharedMfe/SharedMfe";
+import SharedMfe from "@context/components/SharedMfe/SharedMfe";
 
-import { useCounterContext } from "@/hooks/useCounterContext";
+import { useCounterContext } from "@context/hooks/useCounterContext";
 
-import "@/pages/ContextPage/ContextPage.css";
+import "@context/pages/ContextPage/ContextPage.css";
 
 const ContextPage = (): JSX.Element => {
   const { counterState, addCounter, subtractCounter } = useCounterContext();

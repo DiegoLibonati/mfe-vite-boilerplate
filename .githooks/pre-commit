@@ -5,7 +5,7 @@
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
 
-PACKAGES="shared container home about users notfound product context"
+PACKAGES="shared container home about users not-found product context"
 
 EXIT_CODE=0
 

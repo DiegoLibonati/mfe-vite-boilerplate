@@ -1,4 +1,4 @@
-import type { MfeCallbacks } from "@mfe/shared/types";
+import type { MfeCallbacks } from "shared/sdk";
 
 export const mockCallbacks: MfeCallbacks = {
   onNavigate: jest.fn(),

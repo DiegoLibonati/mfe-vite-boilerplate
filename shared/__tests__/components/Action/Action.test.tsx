@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import type { RenderResult } from "@testing-library/react";
-import type { ActionProps } from "@mfe/shared/types/props";
+import type { ActionProps } from "@shared/types/props";
 
-import Action from "@mfe/shared/components/Action/Action";
+import Action from "@shared/components/Action/Action";
 
 const mockOnClick = jest.fn();
 

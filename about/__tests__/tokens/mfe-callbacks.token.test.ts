@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 
-import type { MfeCallbacks } from "@mfe/shared/types/mfe";
+import type { MfeCallbacks } from "shared/sdk";
 
-import { MFE_CALLBACKS } from "@/tokens/mfe-callbacks.token";
+import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
 describe("MFE_CALLBACKS", () => {
   it("should be injectable when provided with a value", () => {

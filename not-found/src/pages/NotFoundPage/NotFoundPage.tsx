@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import "@/pages/NotFoundPage/NotFoundPage.css";
+import "@not-found/pages/NotFoundPage/NotFoundPage.css";
 
 const NotFoundPage = (): JSX.Element => {
   return (

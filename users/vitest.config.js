@@ -6,8 +6,9 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      "@mfe/shared": path.resolve(import.meta.dirname, "../shared/src/exports.ts"),
-      "@": path.resolve(import.meta.dirname, "./src"),
+      "shared/sdk": path.resolve(import.meta.dirname, "../shared/src/exports.ts"),
+      "@shared": path.resolve(import.meta.dirname, "../shared/src"),
+      "@users": path.resolve(import.meta.dirname, "./src"),
       "@tests": path.resolve(import.meta.dirname, "./__tests__"),
     },
   },

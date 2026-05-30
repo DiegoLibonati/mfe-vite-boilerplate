@@ -1,8 +1,8 @@
 import { Component } from "react";
 
 import type { ReactNode, ErrorInfo } from "react";
-import type { MfeErrorBoundaryProps } from "@mfe/shared/types/props";
-import type { MfeErrorBoundaryState } from "@mfe/shared/types/states";
+import type { MfeErrorBoundaryProps } from "@shared/types/props";
+import type { MfeErrorBoundaryState } from "@shared/types/states";
 
 class MfeErrorBoundary extends Component<MfeErrorBoundaryProps, MfeErrorBoundaryState> {
   constructor(props: MfeErrorBoundaryProps) {

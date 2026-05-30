@@ -1,9 +1,9 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
-import App from "@/App";
+import App from "@home/App";
 
-import "@/index.css";
+import "@home/index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 

@@ -1,15 +1,15 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 
 import type { JSX } from "react";
-import type { User } from "@mfe/shared/types";
-import type { UsersAppProps } from "@/types/props";
+import type { User } from "shared/sdk";
+import type { UsersAppProps } from "@container/types/props";
 
-import RemoteMfe from "@/components/RemoteMfe/RemoteMfe";
-import DefaultLoading from "@/components/DefaultLoading/DefaultLoading";
+import RemoteMfe from "@container/components/RemoteMfe/RemoteMfe";
+import DefaultLoading from "@container/components/DefaultLoading/DefaultLoading";
 
-import userService from "@/services/userService";
+import userService from "@container/services/userService";
 
-import "@/components/UsersApp/UsersApp.css";
+import "@container/components/UsersApp/UsersApp.css";
 
 const UsersApp = ({ callbacks }: UsersAppProps): JSX.Element => {
   const [users, setUsers] = useState<User[]>([]);

@@ -1,7 +1,7 @@
 import type { JSX } from "react";
-import type { InheritedProviderProps } from "@mfe/shared/types/props";
+import type { InheritedProviderProps } from "@shared/types/props";
 
-import { InheritedContext } from "@mfe/shared/contexts/InheritedContext/InheritedContext";
+import { InheritedContext } from "@shared/contexts/InheritedContext/InheritedContext";
 
 export const InheritedProvider = ({ children, callbacks }: InheritedProviderProps): JSX.Element => {
   return (

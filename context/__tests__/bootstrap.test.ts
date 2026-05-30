@@ -15,7 +15,7 @@ describe("bootstrap", () => {
 
   it("should create a root on the #root element", async () => {
     await jest.isolateModulesAsync(async () => {
-      await import("@/bootstrap");
+      await import("@context/bootstrap");
     });
 
     expect(mockCreateRoot).toHaveBeenCalledWith(document.querySelector<HTMLDivElement>("#root"));
@@ -23,7 +23,7 @@ describe("bootstrap", () => {
 
   it("should render the App inside the root", async () => {
     await jest.isolateModulesAsync(async () => {
-      await import("@/bootstrap");
+      await import("@context/bootstrap");
     });
 
     expect(mockRender).toHaveBeenCalledTimes(1);

@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo } from "react";
 
 import type { JSX } from "react";
-import type { MfeCallbacks, MfeEvent } from "@mfe/shared/types";
-import type { ContextAppProps } from "@/types/props";
+import type { MfeCallbacks, MfeEvent } from "shared/sdk";
+import type { ContextAppProps } from "@container/types/props";
 
-import RemoteMfe from "@/components/RemoteMfe/RemoteMfe";
+import RemoteMfe from "@container/components/RemoteMfe/RemoteMfe";
 
-import "@/components/ContextApp/ContextApp.css";
+import "@container/components/ContextApp/ContextApp.css";
 
 const ContextApp = ({ callbacks }: ContextAppProps): JSX.Element => {
   const [counterValue, setCounterValue] = useState<number | null>(null);

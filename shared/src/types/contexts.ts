@@ -1,4 +1,4 @@
-import type { MfeCallbacks } from "@mfe/shared/types/mfe";
+import type { MfeCallbacks } from "@shared/types/mfe";
 
 export interface InheritedContext {
   callbacks: MfeCallbacks;

@@ -1,11 +1,11 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
-import type { UsersAppProps } from "@/types/props";
+import type { UsersAppProps } from "@container/types/props";
 
-import UsersApp from "@/components/UsersApp/UsersApp";
+import UsersApp from "@container/components/UsersApp/UsersApp";
 
-import userService from "@/services/userService";
+import userService from "@container/services/userService";
 
 import { mockUser } from "@tests/__mocks__/user.mock";
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
@@ -26,7 +26,7 @@ jest.mock(
   }),
   { virtual: true }
 );
-jest.mock("@/services/userService");
+jest.mock("@container/services/userService");
 
 const renderComponent = async (props: Partial<UsersAppProps> = {}): Promise<RenderResult> => {
   let result!: RenderResult;

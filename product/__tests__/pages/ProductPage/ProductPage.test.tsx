@@ -1,15 +1,15 @@
 import { render, screen } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
-import type { SharedComponentModule } from "@mfe/shared/types/mfe";
+import type { SharedComponentModule } from "shared/sdk";
 
-import ProductPage from "@/pages/ProductPage/ProductPage";
+import ProductPage from "@product/pages/ProductPage/ProductPage";
 
 let mockLinkMount: jest.Mock;
 let mockActionMount: jest.Mock;
 
-jest.mock("@mfe/shared", () => {
-  const actual: Record<string, unknown> = jest.requireActual("@mfe/shared");
+jest.mock("shared/sdk", () => {
+  const actual: Record<string, unknown> = jest.requireActual("shared/sdk");
   return {
     ...actual,
     LinkModule: { mount: jest.fn(), unmount: jest.fn() },
@@ -20,7 +20,7 @@ jest.mock("@mfe/shared", () => {
 const renderPage = (productId = "1"): RenderResult => render(<ProductPage productId={productId} />);
 
 beforeAll(async () => {
-  const { LinkModule, ActionModule } = await import("@mfe/shared");
+  const { LinkModule, ActionModule } = await import("shared/sdk");
   mockLinkMount = (LinkModule as unknown as SharedComponentModule).mount as jest.Mock;
   mockActionMount = (ActionModule as unknown as SharedComponentModule).mount as jest.Mock;
 });

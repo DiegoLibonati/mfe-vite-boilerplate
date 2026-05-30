@@ -5,7 +5,7 @@ describe("bootstrap", () => {
     document.body.innerHTML = '<div id="root"></div>';
 
     await act(async () => {
-      await import("@mfe/shared/bootstrap");
+      await import("@shared/bootstrap");
     });
 
     const root = document.querySelector<HTMLDivElement>("#root")!;

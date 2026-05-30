@@ -1,9 +1,9 @@
 import { act } from "@testing-library/react";
 
 import type { JSX } from "react";
-import type { MfeMountOptions } from "@mfe/shared/types/mfe";
+import type { MfeMountOptions } from "@shared/types/mfe";
 
-import { mount, unmount } from "@mfe/shared/mount";
+import { mount, unmount } from "@shared/mount";
 
 const TestApp = (): JSX.Element => <div>Test App Content</div>;
 

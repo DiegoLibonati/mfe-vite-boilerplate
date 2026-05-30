@@ -1,4 +1,4 @@
-import type { SharedComponentModule } from "@mfe/shared/types";
+import type { SharedComponentModule } from "shared/sdk";
 
 export interface SharedMfeProps<P> {
   module: SharedComponentModule<P>;

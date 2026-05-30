@@ -1,11 +1,11 @@
 import { render } from "@testing-library/react";
-import { InheritedProvider } from "@mfe/shared";
+import { InheritedProvider } from "shared/sdk";
 
 import type { RenderResult } from "@testing-library/react";
-import type { SharedMfeProps } from "@/types/props";
-import type { SharedComponentModule, MfeCallbacks } from "@mfe/shared/types";
+import type { SharedMfeProps } from "@context/types/props";
+import type { SharedComponentModule, MfeCallbacks } from "shared/sdk";
 
-import SharedMfe from "@/components/SharedMfe/SharedMfe";
+import SharedMfe from "@context/components/SharedMfe/SharedMfe";
 
 import { mockModule, mockMount, mockUnmount } from "@tests/__mocks__/module.mock";
 

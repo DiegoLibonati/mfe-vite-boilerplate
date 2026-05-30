@@ -1,9 +1,9 @@
 import type { JSX } from "react";
-import type { LinkProps } from "@mfe/shared/types/props";
+import type { LinkProps } from "@shared/types/props";
 
-import { useInheritedContext } from "@mfe/shared/hooks/useInheritedContext";
+import { useInheritedContext } from "@shared/hooks/useInheritedContext";
 
-import "@mfe/shared/components/Link/Link.css";
+import "@shared/components/Link/Link.css";
 
 const Link = ({
   id,

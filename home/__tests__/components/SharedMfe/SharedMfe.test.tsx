@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
-import { InheritedProvider } from "@mfe/shared";
+import { InheritedProvider } from "shared/sdk";
 
 import type { RenderResult } from "@testing-library/react";
-import type { SharedComponentModule, MfeCallbacks } from "@mfe/shared/types/mfe";
+import type { SharedComponentModule, MfeCallbacks } from "shared/sdk";
 
-import SharedMfe from "@/components/SharedMfe/SharedMfe";
+import SharedMfe from "@home/components/SharedMfe/SharedMfe";
 
 interface TestProps {
   id: string;

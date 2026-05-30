@@ -8,7 +8,7 @@ jest.mock("react-dom/client", () => ({
   },
 }));
 
-jest.mock("@/constants/envs", () => {
+jest.mock("@container/constants/envs", () => {
   const mockData = jest.requireActual("@tests/__mocks__/envs.mock");
   const { mockEnvs } = mockData;
   return {
@@ -22,7 +22,7 @@ describe("bootstrap", () => {
     document.body.innerHTML = '<div id="root"></div>';
     mockCreateRoot.mockReturnValue({ render: mockRender });
 
-    await import("@/bootstrap");
+    await import("@container/bootstrap");
 
     expect(mockCreateRoot).toHaveBeenCalledWith(document.querySelector<HTMLDivElement>("#root"));
     expect(mockRender).toHaveBeenCalledTimes(1);

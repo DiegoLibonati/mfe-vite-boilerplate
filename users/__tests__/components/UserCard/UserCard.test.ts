@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/vue";
 
 import type { RenderResult } from "@testing-library/vue";
-import type { UserCardProps } from "@/types/props";
+import type { UserCardProps } from "@users/types/props";
 
-import UserCard from "@/components/UserCard/UserCard.vue";
+import UserCard from "@users/components/UserCard/UserCard.vue";
 
 const defaultProps: UserCardProps = {
   name: "Leanne Graham",

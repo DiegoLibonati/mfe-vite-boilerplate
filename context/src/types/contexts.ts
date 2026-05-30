@@ -1,4 +1,4 @@
-import type { CounterState } from "@/types/states";
+import type { CounterState } from "@context/types/states";
 
 export interface CounterContext {
   counterState: CounterState;

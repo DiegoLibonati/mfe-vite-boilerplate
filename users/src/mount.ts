@@ -1,11 +1,11 @@
 import { createApp } from "vue";
 
 import type { App as VueApp } from "vue";
-import type { UsersMfeMountOptions } from "@/types/mfe";
+import type { UsersMfeMountOptions } from "@users/types/mfe";
 
-import UsersPage from "@/pages/UsersPage/UsersPage.vue";
+import UsersPage from "@users/pages/UsersPage/UsersPage.vue";
 
-import "@/index.css";
+import "@users/index.css";
 
 const apps = new Map<HTMLElement, VueApp>();
 

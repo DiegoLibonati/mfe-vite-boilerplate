@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
-PACKAGES=("shared" "container" "home" "about" "users" "notfound" "product" "context")
-NAMES=("Shared" "Container" "Home" "About" "Users" "NotFound" "Product" "Context")
+PACKAGES=("shared" "container" "home" "about" "users" "not-found" "product" "context")
+NAMES=("Shared" "Container" "Home" "About" "Users" "Not Found" "Product" "Context")
 SCRIPT="test"
 NPM_CLIENT="npm"
 # ─────────────────────────────────────────────────────────────────────────────

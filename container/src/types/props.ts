@@ -1,4 +1,4 @@
-import type { MfeModule, MfeCallbacks } from "@mfe/shared/types";
+import type { MfeModule, MfeCallbacks } from "shared/sdk";
 
 export interface ErrorBoundaryProps {
   children: React.ReactNode;

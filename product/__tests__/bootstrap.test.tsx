@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 
 import type { ReactElement } from "react";
 
-import App from "@/App";
+import App from "@product/App";
 
 let createRootElement: unknown;
 let renderCallCount: number;
@@ -24,7 +24,7 @@ describe("bootstrap", () => {
     root.id = "root";
     document.body.appendChild(root);
 
-    await import("@/bootstrap");
+    await import("@product/bootstrap");
 
     const { createRoot } = await import("react-dom/client");
     const mockCreateRoot = createRoot as jest.Mock;

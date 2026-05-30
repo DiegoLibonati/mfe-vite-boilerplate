@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
 
-import DefaultLoading from "@/components/DefaultLoading/DefaultLoading";
+import DefaultLoading from "@container/components/DefaultLoading/DefaultLoading";
 
 const renderComponent = (): RenderResult => render(<DefaultLoading />);
 

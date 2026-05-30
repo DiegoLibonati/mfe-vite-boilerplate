@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import type { UseMfeCallbacks } from "@/types/hooks";
+import type { UseMfeCallbacks } from "@container/types/hooks";
 
 export const useMfeCallbacks = (): UseMfeCallbacks => {
   const navigate = useNavigate();

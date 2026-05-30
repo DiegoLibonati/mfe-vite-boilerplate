@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
-import type { MfeErrorBoundaryProps } from "@mfe/shared/types/props";
+import type { MfeErrorBoundaryProps } from "@shared/types/props";
 
-import MfeErrorBoundary from "@mfe/shared/components/MfeErrorBoundary/MfeErrorBoundary";
+import MfeErrorBoundary from "@shared/components/MfeErrorBoundary/MfeErrorBoundary";
 
 const ThrowingComponent = (): never => {
   throw new Error("Test error");

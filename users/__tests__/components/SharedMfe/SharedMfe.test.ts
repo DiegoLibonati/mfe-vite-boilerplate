@@ -3,9 +3,9 @@ import { vi } from "vitest";
 
 import type { RenderResult } from "@testing-library/vue";
 import type { Mock } from "vitest";
-import type { MfeCallbacks, SharedComponentModule } from "@mfe/shared/types";
+import type { MfeCallbacks, SharedComponentModule } from "shared/sdk";
 
-import SharedMfe from "@/components/SharedMfe/SharedMfe.vue";
+import SharedMfe from "@users/components/SharedMfe/SharedMfe.vue";
 
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
 

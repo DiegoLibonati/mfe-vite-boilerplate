@@ -25,7 +25,7 @@ cd "$(dirname "$0")/shared" && npm install && npm run dev &
 cd "$(dirname "$0")/home" && npm run dev &
 cd "$(dirname "$0")/about" && npm run dev &
 cd "$(dirname "$0")/users" && npm run dev &
-cd "$(dirname "$0")/notfound" && npm run dev &
+cd "$(dirname "$0")/not-found" && npm run dev &
 cd "$(dirname "$0")/product" && npm run dev &
 cd "$(dirname "$0")/context" && npm run dev &
 cd "$(dirname "$0")/container" && npm run dev &

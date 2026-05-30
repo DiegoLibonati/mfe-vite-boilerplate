@@ -1,4 +1,4 @@
-import type { User } from "@mfe/shared/types";
+import type { User } from "shared/sdk";
 
 export const mockUser: User = {
   id: 1,

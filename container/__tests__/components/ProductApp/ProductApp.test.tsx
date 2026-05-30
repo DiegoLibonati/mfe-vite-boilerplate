@@ -2,9 +2,9 @@ import { act, render } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import type { RenderResult } from "@testing-library/react";
-import type { ProductAppProps } from "@/types/props";
+import type { ProductAppProps } from "@container/types/props";
 
-import ProductApp from "@/components/ProductApp/ProductApp";
+import ProductApp from "@container/components/ProductApp/ProductApp";
 
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
 

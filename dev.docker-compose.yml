@@ -15,10 +15,11 @@ services:
     networks:
       - boilerplate-net
     depends_on:
+      - shared
       - home
       - about
       - users
-      - notfound
+      - not-found
       - product
       - context
     stdin_open: true
@@ -54,6 +55,8 @@ services:
       - 3010:3010
     networks:
       - boilerplate-net
+    depends_on:
+      - shared
     stdin_open: true
     tty: true
 
@@ -72,6 +75,8 @@ services:
       - 3020:3020
     networks:
       - boilerplate-net
+    depends_on:
+      - shared
     stdin_open: true
     tty: true
 
@@ -90,24 +95,28 @@ services:
       - 3030:3030
     networks:
       - boilerplate-net
+    depends_on:
+      - shared
     stdin_open: true
     tty: true
 
-  notfound:
+  not-found:
     build:
-      context: ./notfound
+      context: ./not-found
       dockerfile: Dockerfile.development
     restart: unless-stopped
     env_file:
-      - ./notfound/.env
+      - ./not-found/.env
     volumes:
-      - ./notfound:/home/app
+      - ./not-found:/home/app
       - ./shared:/home/shared
       - /home/app/node_modules
     ports:
       - 3040:3040
     networks:
       - boilerplate-net
+    depends_on:
+      - shared
     stdin_open: true
     tty: true
 
@@ -126,6 +135,8 @@ services:
       - 3050:3050
     networks:
       - boilerplate-net
+    depends_on:
+      - shared
     stdin_open: true
     tty: true
 
@@ -144,6 +155,8 @@ services:
       - 3060:3060
     networks:
       - boilerplate-net
+    depends_on:
+      - shared
     stdin_open: true
     tty: true
 

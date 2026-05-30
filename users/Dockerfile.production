@@ -1,5 +1,8 @@
 FROM node:22-alpine AS builder
 
+ARG VITE_REMOTE_SHARED_URL
+ENV VITE_REMOTE_SHARED_URL=$VITE_REMOTE_SHARED_URL
+
 WORKDIR /home/shared
 COPY shared/package*.json shared/.npmrc ./
 RUN npm ci

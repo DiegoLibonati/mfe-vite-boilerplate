@@ -24,10 +24,10 @@
     "exactOptionalPropertyTypes": true,
 
     "paths": {
-      "@/*": ["./src/*"],
+      "@not-found/*": ["./src/*"],
       "@tests/*": ["./__tests__/*"],
-      "@mfe/shared": ["../shared/src/exports.ts"],
-      "@mfe/shared/*": ["../shared/src/*"]
+      "shared/sdk": ["../shared/src/exports.ts"],
+      "@shared/*": ["../shared/src/*"]
     }
   }
 }

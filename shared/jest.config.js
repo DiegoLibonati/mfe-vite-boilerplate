@@ -10,8 +10,7 @@ const config = {
   moduleNameMapper: {
     "\\.(css|scss)$": "<rootDir>/__tests__/__mocks__/style.mock.ts",
     "\\.(png|jpg|jpeg|gif|svg|webp)$": "<rootDir>/__tests__/__mocks__/file.mock.ts",
-    "^@mfe/shared$": "<rootDir>/src/exports.ts",
-    "^@mfe/shared/(.*)$": "<rootDir>/src/$1",
+    "^@shared/(.*)$": "<rootDir>/src/$1",
     "^@tests/(.*)$": "<rootDir>/__tests__/$1",
   },
   transform: {

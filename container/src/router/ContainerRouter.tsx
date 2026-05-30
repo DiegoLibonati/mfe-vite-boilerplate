@@ -3,23 +3,23 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import type { JSX } from "react";
 
-import RemoteMfe from "@/components/RemoteMfe/RemoteMfe";
-import UsersApp from "@/components/UsersApp/UsersApp";
-import ProductApp from "@/components/ProductApp/ProductApp";
-import ContextApp from "@/components/ContextApp/ContextApp";
+import RemoteMfe from "@container/components/RemoteMfe/RemoteMfe";
+import UsersApp from "@container/components/UsersApp/UsersApp";
+import ProductApp from "@container/components/ProductApp/ProductApp";
+import ContextApp from "@container/components/ContextApp/ContextApp";
 
-import { PublicRoute } from "@/router/PublicRoute";
+import { PublicRoute } from "@container/router/PublicRoute";
 
-import { useMfeCallbacks } from "@/hooks/useMfeCallbacks";
+import { useMfeCallbacks } from "@container/hooks/useMfeCallbacks";
 
-import envs from "@/constants/envs";
+import envs from "@container/constants/envs";
 
 export const ContainerRouter = (): JSX.Element => {
   const callbacks = useMfeCallbacks();
 
   const loadHomeModule = useCallback(() => import("home/HomeApp"), []);
   const loadAboutModule = useCallback(() => import("about/AboutApp"), []);
-  const loadNotFoundModule = useCallback(() => import("notfound/NotFoundApp"), []);
+  const loadNotFoundModule = useCallback(() => import("not-found/NotFoundApp"), []);
 
   return (
     <Routes>

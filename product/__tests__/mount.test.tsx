@@ -2,9 +2,9 @@ import { StrictMode } from "react";
 
 import type { ReactElement } from "react";
 
-import App from "@/App";
+import App from "@product/App";
 
-import { mount, unmount } from "@/mount";
+import { mount, unmount } from "@product/mount";
 
 let mockRender: jest.Mock;
 let mockUnmount: jest.Mock;
