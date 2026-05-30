@@ -5,10 +5,7 @@ import App from "@shared/App";
 
 import "@shared/styles/global.css";
 
-const rootElement = document.getElementById("root")!;
-rootElement.dataset.mfe = "shared";
-
-const root = ReactDOM.createRoot(rootElement);
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(
   <StrictMode>
