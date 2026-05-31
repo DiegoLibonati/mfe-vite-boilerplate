@@ -6,7 +6,11 @@ import type { SharedMfeProps } from "@context/types/props";
 
 import "@context/components/SharedMfe/SharedMfe.css";
 
-const SharedMfe = <P,>({ module, componentProps }: SharedMfeProps<P>): JSX.Element => {
+const SharedMfe = <P,>({
+  module,
+  componentProps,
+  wrapperClass,
+}: SharedMfeProps<P>): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);
   const inherited = useInheritedContext();
   const propsRef = useRef(componentProps);
@@ -24,7 +28,20 @@ const SharedMfe = <P,>({ module, componentProps }: SharedMfeProps<P>): JSX.Eleme
     };
   }, [module, inherited]);
 
-  return <div ref={containerRef} className="shared-mfe__container" />;
+  // The host div owns the `<className>-wrapper` convention: it derives its class from the
+  // mounted component's `className` so consumers don't need a manual wrapper element.
+  // Pass `wrapperClass` to override the inferred name.
+  const rawClassName = (componentProps as unknown as { className?: unknown }).className;
+  const inferredWrapperClass =
+    typeof rawClassName === "string" && rawClassName ? `${rawClassName}-wrapper` : undefined;
+  const resolvedWrapperClass = wrapperClass ?? inferredWrapperClass;
+
+  return (
+    <div
+      ref={containerRef}
+      className={[resolvedWrapperClass, "shared-mfe__container"].filter(Boolean).join(" ")}
+    />
+  );
 };
 
 export default SharedMfe;

@@ -228,4 +228,46 @@ describe("RemoteMfe", () => {
       expect(mockMfeModule.unmount).not.toHaveBeenCalled();
     });
   });
+
+  describe("wrapper class", () => {
+    it("should infer a <className>-wrapper class on the host and keep the base class", async () => {
+      mockLoadModule.mockReturnValue(
+        new Promise(() => {
+          // Empty fn
+        })
+      );
+
+      await renderComponent({ mountData: { className: "foo" } });
+
+      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
+      expect(container).toHaveClass("foo-wrapper", "remote-mfe__container");
+    });
+
+    it("should let wrapperClass override the inferred name", async () => {
+      mockLoadModule.mockReturnValue(
+        new Promise(() => {
+          // Empty fn
+        })
+      );
+
+      await renderComponent({ mountData: { className: "foo" }, wrapperClass: "bar" });
+
+      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
+      expect(container).toHaveClass("bar", "remote-mfe__container");
+      expect(container).not.toHaveClass("foo-wrapper");
+    });
+
+    it("should add no wrapper class when mountData has no className", async () => {
+      mockLoadModule.mockReturnValue(
+        new Promise(() => {
+          // Empty fn
+        })
+      );
+
+      await renderComponent();
+
+      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
+      expect(container?.className).toBe("remote-mfe__container remote-mfe__container--hidden");
+    });
+  });
 });

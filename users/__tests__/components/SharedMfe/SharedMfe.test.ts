@@ -102,4 +102,50 @@ describe("SharedMfe", () => {
       expect(mockModule.unmountSpy).toHaveBeenCalledWith(div);
     });
   });
+
+  describe("wrapper class", () => {
+    it("should infer a <className>-wrapper class on the host div", () => {
+      const mockModule = createMockModule();
+
+      const { container } = render(SharedMfe, {
+        props: { module: mockModule.module, componentProps: { id: "x", className: "foo" } },
+        global: { provide: { mfeCallbacks: mockCallbacks } },
+      });
+
+      const div = container.querySelector<HTMLDivElement>("div");
+
+      expect(div).toHaveClass("foo-wrapper");
+    });
+
+    it("should let wrapperClass override the inferred name", () => {
+      const mockModule = createMockModule();
+
+      const { container } = render(SharedMfe, {
+        props: {
+          module: mockModule.module,
+          componentProps: { id: "x", className: "foo" },
+          wrapperClass: "bar",
+        },
+        global: { provide: { mfeCallbacks: mockCallbacks } },
+      });
+
+      const div = container.querySelector<HTMLDivElement>("div");
+
+      expect(div).toHaveClass("bar");
+      expect(div).not.toHaveClass("foo-wrapper");
+    });
+
+    it("should add no class when componentProps has no className", () => {
+      const mockModule = createMockModule();
+
+      const { container } = render(SharedMfe, {
+        props: { module: mockModule.module, componentProps: { id: "x" } },
+        global: { provide: { mfeCallbacks: mockCallbacks } },
+      });
+
+      const div = container.querySelector<HTMLDivElement>("div");
+
+      expect(div?.className).toBe("");
+    });
+  });
 });

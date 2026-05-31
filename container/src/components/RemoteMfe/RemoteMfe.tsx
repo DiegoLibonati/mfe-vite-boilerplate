@@ -17,6 +17,7 @@ const RemoteMfe = ({
   mountData,
   loadingFallback,
   errorFallback,
+  wrapperClass,
 }: RemoteMfeProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);
   const moduleRef = useRef<MfeModule | null>(null);
@@ -70,6 +71,14 @@ const RemoteMfe = ({
     };
   }, [loadModule, callbacks, mountData, retryKey, handleMfeError]);
 
+  // The host div owns the `<className>-wrapper` convention: it derives its class from the
+  // mounted remote's `mountData.className` so consumers don't need a manual wrapper element.
+  // Pass `wrapperClass` to override the inferred name.
+  const rawClassName = mountData?.className;
+  const inferredWrapperClass =
+    typeof rawClassName === "string" && rawClassName ? `${rawClassName}-wrapper` : undefined;
+  const resolvedWrapperClass = wrapperClass ?? inferredWrapperClass;
+
   return (
     <>
       {remoteState.status === "loading" && (loadingFallback ?? <DefaultLoading />)}
@@ -85,7 +94,13 @@ const RemoteMfe = ({
         ))}
       <div
         ref={containerRef}
-        className={`remote-mfe__container${remoteState.status !== "mounted" ? " remote-mfe__container--hidden" : ""}`}
+        className={[
+          resolvedWrapperClass,
+          "remote-mfe__container",
+          remoteState.status !== "mounted" ? "remote-mfe__container--hidden" : undefined,
+        ]
+          .filter(Boolean)
+          .join(" ")}
       />
     </>
   );

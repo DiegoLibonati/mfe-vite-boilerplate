@@ -107,4 +107,51 @@ describe("SharedMfe", () => {
       expect(mockNewMount).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe("wrapper class", () => {
+    interface WrapperProps {
+      id: string;
+      className?: string;
+    }
+
+    const createWrapperModule = (): SharedComponentModule<WrapperProps> => ({
+      mount: jest.fn(),
+      unmount: jest.fn(),
+    });
+
+    it("should infer a <className>-wrapper class on the host and keep the base class", () => {
+      const { container } = render(
+        <SharedMfe module={createWrapperModule()} componentProps={{ id: "x", className: "foo" }} />
+      );
+
+      const host = container.querySelector<HTMLDivElement>(".shared-mfe__container");
+
+      expect(host).toHaveClass("foo-wrapper", "shared-mfe__container");
+    });
+
+    it("should let wrapperClass override the inferred name", () => {
+      const { container } = render(
+        <SharedMfe
+          module={createWrapperModule()}
+          componentProps={{ id: "x", className: "foo" }}
+          wrapperClass="bar"
+        />
+      );
+
+      const host = container.querySelector<HTMLDivElement>(".shared-mfe__container");
+
+      expect(host).toHaveClass("bar", "shared-mfe__container");
+      expect(host).not.toHaveClass("foo-wrapper");
+    });
+
+    it("should add no wrapper class when componentProps has no className", () => {
+      const { container } = render(
+        <SharedMfe module={createWrapperModule()} componentProps={{ id: "x" }} />
+      );
+
+      const host = container.querySelector<HTMLDivElement>(".shared-mfe__container");
+
+      expect(host?.className).toBe("shared-mfe__container");
+    });
+  });
 });

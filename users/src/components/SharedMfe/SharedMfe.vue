@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="P extends Record<string, unknown>">
-import { ref, onMounted, onBeforeUnmount, inject } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, inject } from "vue";
 
 import type { MfeCallbacks } from "shared/sdk";
 import type { SharedMfeProps } from "@users/types/props";
@@ -8,6 +8,15 @@ const props = defineProps<SharedMfeProps<P>>();
 
 const containerRef = ref<HTMLDivElement | null>(null);
 const callbacks = inject<MfeCallbacks>("mfeCallbacks");
+
+// Host div follows the `<className>-wrapper` convention: it derives its class from the
+// mounted component's `className` so consumers don't need a manual wrapper element.
+// Pass `wrapperClass` to override the inferred name.
+const wrapperClass = computed<string | undefined>(() => {
+  if (props.wrapperClass) return props.wrapperClass;
+  const className = (props.componentProps as { className?: unknown }).className;
+  return typeof className === "string" && className ? `${className}-wrapper` : undefined;
+});
 
 onMounted(() => {
   const el = containerRef.value;
@@ -25,5 +34,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="containerRef" />
+  <div ref="containerRef" :class="wrapperClass" />
 </template>

@@ -10,6 +10,7 @@ export interface RemoteMfeProps {
   mountData?: Record<string, unknown>;
   loadingFallback?: React.ReactNode;
   errorFallback?: React.ReactNode;
+  wrapperClass?: string;
 }
 
 export interface UsersAppProps {

@@ -12,6 +12,7 @@ import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
 interface SharedMfeInputs {
   module: SharedComponentModule;
   componentProps: Record<string, unknown>;
+  wrapperClass?: string;
 }
 
 interface RenderResult {
@@ -89,6 +90,38 @@ describe("SharedMfeComponent", () => {
 
       expect(mockModule.unmount).toHaveBeenCalledTimes(1);
       expect(mockModule.unmount).toHaveBeenCalledWith(containerElement);
+    });
+  });
+
+  describe("wrapper class", () => {
+    it("should infer a <className>-wrapper class on the host div", async () => {
+      const { fixture } = await renderComponent({
+        componentProps: { id: "x", className: "foo" },
+      });
+
+      const div = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
+
+      expect(div).toHaveClass("foo-wrapper");
+    });
+
+    it("should let wrapperClass override the inferred name", async () => {
+      const { fixture } = await renderComponent({
+        componentProps: { id: "x", className: "foo" },
+        wrapperClass: "bar",
+      });
+
+      const div = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
+
+      expect(div).toHaveClass("bar");
+      expect(div).not.toHaveClass("foo-wrapper");
+    });
+
+    it("should add no class when componentProps has no className", async () => {
+      const { fixture } = await renderComponent({ componentProps: { id: "x" } });
+
+      const div = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
+
+      expect(div?.className).toBe("");
     });
   });
 });
