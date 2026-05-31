@@ -1,5 +1,4 @@
 import path from "path";
-import { createRequire } from "node:module";
 import { defineConfig, loadEnv } from "vite";
 import { transform } from "esbuild";
 import angular from "@analogjs/vite-plugin-angular";
@@ -12,35 +11,6 @@ import type { Plugin, UserConfig } from "vite";
 interface AboutConfig extends UserConfig {
   oxc?: false;
 }
-
-/**
- * Workaround for the zone.js + Angular worker-build crash on Node >= 20.
- *
- * `@module-federation/vite` treats `zone.js` as a shared dependency and, while building the
- * share map, does a CommonJS `require("zone.js")` purely to enumerate its named exports
- * (getPackageNamedExports). In Node that resolves to zone.js's *browser* UMD bundle, which
- * destructively patches Node's global `MessagePort`. `@angular/build`'s `JavaScriptTransformer`
- * then runs esbuild in a worker thread and posts results back over a `MessagePort`, where the
- * broken patch throws `TypeError: Cannot read properties of undefined (reading 'false')` and
- * aborts the build. (Confirmed by tracing the require: every `require("zone.js")` originates in
- * @module-federation/vite, none from the app, whose imports are ESM and irrelevant here.)
- *
- * We redirect that CommonJS `require("zone.js")` to `zone.js/node` — the Node-aware build
- * (zone-node.umd.js) that patches worker MessagePorts correctly (verified to round-trip a
- * MessageChannel message without throwing). It still exposes the same named exports, so the
- * share map is unaffected, and the app's own ESM `import "zone.js"` is resolved by Vite's
- * browser resolver, so the shipped bundle is identical. Remove once @module-federation/vite
- * stops eagerly requiring shared deps, or zone.js stops mis-patching Node's MessagePort.
- */
-const nodeRequire = createRequire(import.meta.url);
-const zoneNodeEntry = nodeRequire.resolve("zone.js/node");
-type ModuleLoader = {
-  _load(request: string, parent: unknown, isMain: boolean): unknown;
-};
-const moduleLoader = nodeRequire("node:module") as ModuleLoader;
-const originalLoad = moduleLoader._load.bind(moduleLoader);
-moduleLoader._load = (request, parent, isMain) =>
-  originalLoad(request === "zone.js" ? zoneNodeEntry : request, parent, isMain);
 
 /**
  * Workaround for the @analogjs/vite-plugin-angular + Vite 7 + decorators interaction.
@@ -95,6 +65,21 @@ export default defineConfig(({ mode }): AboutConfig => {
             name: "shared",
             entry: env.VITE_REMOTE_SHARED_URL || "http://localhost:4000/remoteEntry.js",
           },
+        },
+        // Share the Angular runtime as singletons, mirroring how the React remotes share
+        // `react`/`react-dom` and `users` shares `vue`. Declaring `shared` explicitly is also
+        // what stops @module-federation/vite from auto-sharing EVERY package.json dependency —
+        // crucially `zone.js`, a side-effect-only polyfill with no ESM default export. Auto-sharing
+        // it made MF (a) build a `__prebuild__` ESM wrapper that fails at runtime with "does not
+        // provide an export named 'default'", and (b) eagerly `require("zone.js")` (its browser UMD)
+        // to enumerate exports, which mis-patched Node's MessagePort and crashed Angular's worker
+        // build. zone.js is loaded directly via `import "zone.js"` in each entry, so it never needs
+        // to cross the federation boundary.
+        shared: {
+          "@angular/core": { singleton: true, requiredVersion: "^19.2.0" },
+          "@angular/common": { singleton: true, requiredVersion: "^19.2.0" },
+          "@angular/compiler": { singleton: true, requiredVersion: "^19.2.0" },
+          "@angular/platform-browser": { singleton: true, requiredVersion: "^19.2.0" },
         },
         dts: false,
       }),
