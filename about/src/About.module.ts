@@ -5,7 +5,7 @@ import { createComponent } from "@angular/core";
 import type { ApplicationRef } from "@angular/core";
 import type { MfeMountOptions } from "shared/sdk";
 
-import { AboutPageComponent } from "@about/pages/about-page/about-page.component";
+import AboutPageComponent from "@about/pages/about-page/about-page.component";
 
 import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 

@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from "@angular/core";
 import { LinkModule } from "shared/sdk";
 
-import { SharedMfeComponent } from "@about/components/shared-mfe/shared-mfe.component";
+import SharedMfeComponent from "@about/components/shared-mfe/shared-mfe.component";
 
 @Component({
   selector: "app-about-page",
@@ -11,7 +11,7 @@ import { SharedMfeComponent } from "@about/components/shared-mfe/shared-mfe.comp
   templateUrl: "./about-page.component.html",
   styleUrl: "./about-page.component.css",
 })
-export class AboutPageComponent {
+class AboutPageComponent {
   linkModule = LinkModule;
 
   productLinkProps = {
@@ -30,3 +30,5 @@ export class AboutPageComponent {
     children: "Go to Context Page",
   };
 }
+
+export default AboutPageComponent;

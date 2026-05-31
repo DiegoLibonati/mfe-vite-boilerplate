@@ -11,7 +11,7 @@ import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
   encapsulation: ViewEncapsulation.None,
   templateUrl: "./shared-mfe.component.html",
 })
-export class SharedMfeComponent implements AfterViewInit, OnDestroy {
+class SharedMfeComponent implements AfterViewInit, OnDestroy {
   @Input({ required: true }) module!: SharedComponentModule;
   @Input({ required: true }) componentProps!: Record<string, unknown>;
 
@@ -29,3 +29,5 @@ export class SharedMfeComponent implements AfterViewInit, OnDestroy {
     this.module.unmount(this.containerRef.nativeElement);
   }
 }
+
+export default SharedMfeComponent;

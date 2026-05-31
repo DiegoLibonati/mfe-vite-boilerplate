@@ -1,7 +1,7 @@
 import "zone.js";
 import { bootstrapApplication } from "@angular/platform-browser";
 
-import { AboutPageComponent } from "@about/pages/about-page/about-page.component";
+import AboutPageComponent from "@about/pages/about-page/about-page.component";
 
 import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
