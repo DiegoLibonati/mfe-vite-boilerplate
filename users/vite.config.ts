@@ -28,8 +28,6 @@ export default defineConfig(({ mode }): UserConfig => {
         },
         shared: {
           vue: { singleton: true, requiredVersion: "^3.5.0" },
-          react: { singleton: true, requiredVersion: "^19.0.0" },
-          "react-dom": { singleton: true, requiredVersion: "^19.0.0" },
         },
         dts: false,
       }),

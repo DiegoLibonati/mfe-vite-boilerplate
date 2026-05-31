@@ -104,8 +104,6 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 "@angular/compiler": "^19.2.0"
 "@angular/core": "^19.2.0"
 "@angular/platform-browser": "^19.2.0"
-"react": "^19.2.4"
-"react-dom": "^19.2.4"
 "zone.js": "^0.15.0"
 ```
 
@@ -123,8 +121,6 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 #### Dependencies
 
 ```
-"react": "^19.2.4"
-"react-dom": "^19.2.4"
 "vue": "^3.5.34"
 ```
 

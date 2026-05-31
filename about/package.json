@@ -11,8 +11,6 @@
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
     "@angular/platform-browser": "^19.2.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
     "zone.js": "^0.15.0"
   },
   "devDependencies": {

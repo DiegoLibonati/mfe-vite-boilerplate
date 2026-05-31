@@ -66,10 +66,6 @@ export default defineConfig(({ mode }): AboutConfig => {
             entry: env.VITE_REMOTE_SHARED_URL || "http://localhost:4000/remoteEntry.js",
           },
         },
-        shared: {
-          react: { singleton: true, requiredVersion: "^19.0.0" },
-          "react-dom": { singleton: true, requiredVersion: "^19.0.0" },
-        },
         dts: false,
       }),
       angular({ tsconfig: "./tsconfig.app.json" }),
