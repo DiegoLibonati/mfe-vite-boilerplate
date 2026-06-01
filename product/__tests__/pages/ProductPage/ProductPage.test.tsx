@@ -1,29 +1,11 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import type { RenderResult } from "@testing-library/react";
-import type { SharedComponentModule } from "shared/sdk";
 
 import ProductPage from "@product/pages/ProductPage/ProductPage";
 
-let mockLinkMount: jest.Mock;
-let mockActionMount: jest.Mock;
-
-jest.mock("shared/sdk", () => {
-  const actual: Record<string, unknown> = jest.requireActual("shared/sdk");
-  return {
-    ...actual,
-    LinkModule: { mount: jest.fn(), unmount: jest.fn() },
-    ActionModule: { mount: jest.fn(), unmount: jest.fn() },
-  };
-});
-
 const renderPage = (productId = "1"): RenderResult => render(<ProductPage productId={productId} />);
-
-beforeAll(async () => {
-  const { LinkModule, ActionModule } = await import("shared/sdk");
-  mockLinkMount = (LinkModule as unknown as SharedComponentModule).mount as jest.Mock;
-  mockActionMount = (ActionModule as unknown as SharedComponentModule).mount as jest.Mock;
-});
 
 describe("ProductPage", () => {
   describe("rendering", () => {
@@ -54,55 +36,30 @@ describe("ProductPage", () => {
     });
   });
 
-  describe("behavior", () => {
-    it("should mount the link module once", () => {
+  describe("shared components", () => {
+    it("should render the not-found link once the shared SDK loads", async () => {
       renderPage();
 
-      expect(mockLinkMount).toHaveBeenCalledTimes(1);
-    });
-
-    it("should mount the action module once", () => {
-      renderPage();
-
-      expect(mockActionMount).toHaveBeenCalledTimes(1);
-    });
-
-    it("should pass not-found link props to a shared-mfe component", () => {
-      renderPage();
-
-      expect(mockLinkMount).toHaveBeenCalledWith(
-        expect.any(HTMLDivElement),
-        {
-          id: "product-link-not-found",
-          ariaLabel: "Go to an unknown page",
-          href: "/pasdasdasdasd",
-          target: "_self",
-          children: "Go to Not Exists Page",
-        },
-        undefined
+      expect(await screen.findByRole("link", { name: "Go to an unknown page" })).toHaveAttribute(
+        "href",
+        "/pasdasdasdasd"
       );
     });
 
-    it("should pass action props with the product id to a shared-mfe component", () => {
+    it("should render the action button with the product id once the shared SDK loads", async () => {
       renderPage("7");
 
-      expect(mockActionMount).toHaveBeenCalledWith(
-        expect.any(HTMLDivElement),
-        expect.objectContaining({
-          id: "action-show-product-id",
-          ariaLabel: "Show product ID 7",
-          children: "Click Product Id",
-        }),
-        undefined
-      );
+      expect(await screen.findByRole("button", { name: "Show product ID 7" })).toBeInTheDocument();
     });
+  });
 
-    it("should pass an onClick callback that calls alert with the product id", () => {
+  describe("behavior", () => {
+    it("should alert the product id when the action is clicked", async () => {
       jest.spyOn(window, "alert").mockImplementation();
+      const user = userEvent.setup();
       renderPage("99");
-      const onClick = mockActionMount.mock.calls[0][1].onClick as () => void;
 
-      onClick();
+      await user.click(await screen.findByRole("button", { name: "Show product ID 99" }));
 
       expect(window.alert).toHaveBeenCalledWith("Product ID: 99");
     });

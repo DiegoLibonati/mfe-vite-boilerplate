@@ -3,7 +3,6 @@ export interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export interface RemoteMfeState {
-  status: "loading" | "mounted" | "error";
+export interface RemoteErrorBoundaryState {
   error: Error | null;
 }

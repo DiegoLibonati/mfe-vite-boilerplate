@@ -66,15 +66,6 @@ export default defineConfig(({ mode }): AboutConfig => {
             entry: env.VITE_REMOTE_SHARED_URL || "http://localhost:4000/remoteEntry.js",
           },
         },
-        // Share the Angular runtime as singletons, mirroring how the React remotes share
-        // `react`/`react-dom` and `users` shares `vue`. Declaring `shared` explicitly is also
-        // what stops @module-federation/vite from auto-sharing EVERY package.json dependency —
-        // crucially `zone.js`, a side-effect-only polyfill with no ESM default export. Auto-sharing
-        // it made MF (a) build a `__prebuild__` ESM wrapper that fails at runtime with "does not
-        // provide an export named 'default'", and (b) eagerly `require("zone.js")` (its browser UMD)
-        // to enumerate exports, which mis-patched Node's MessagePort and crashed Angular's worker
-        // build. zone.js is loaded directly via `import "zone.js"` in each entry, so it never needs
-        // to cross the federation boundary.
         shared: {
           "@angular/core": { singleton: true, requiredVersion: "^19.2.0" },
           "@angular/common": { singleton: true, requiredVersion: "^19.2.0" },
@@ -94,14 +85,7 @@ export default defineConfig(({ mode }): AboutConfig => {
           prefixSelector({
             prefix: '[data-mfe="about"]',
             transform: (prefix, selector, prefixedSelector) => {
-              // The universal reset (`*`, `*::before`, `*::after`) must stay GLOBAL so it
-              // reaches the real <html>/<body>. Scoped as `[data-mfe="x"] *` it only matches
-              // the host's descendants, leaving the browser's default <body> margin in place —
-              // that's the white gutter around the standalone MFE. The reset is idempotent, so
-              // re-applying it globally inside the container is harmless.
               if (selector.startsWith("*")) return selector;
-              // Page-level selectors style the MFE host element itself, not the real document,
-              // so the MFE's cosmetic styles stay scoped when embedded in the container.
               if ([":root", "html", "body"].includes(selector)) return prefix;
               return prefixedSelector;
             },

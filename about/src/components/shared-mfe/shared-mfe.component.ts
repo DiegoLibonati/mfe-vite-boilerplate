@@ -1,28 +1,31 @@
-import { Component, Input, ViewChild, ViewEncapsulation, inject } from "@angular/core";
+import { Component, Input, ViewChild, ViewEncapsulation, inject, signal } from "@angular/core";
 
-import type { ElementRef, AfterViewInit, OnDestroy } from "@angular/core";
+import type { ElementRef, AfterViewInit, OnDestroy, WritableSignal } from "@angular/core";
 import type { SharedComponentModule } from "shared/sdk";
+
+import DefaultLoadingComponent from "@about/components/default-loading/default-loading.component";
 
 import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
 @Component({
   selector: "app-shared-mfe",
   standalone: true,
+  imports: [DefaultLoadingComponent],
   encapsulation: ViewEncapsulation.None,
   templateUrl: "./shared-mfe.component.html",
 })
 class SharedMfeComponent implements AfterViewInit, OnDestroy {
-  @Input({ required: true }) module!: SharedComponentModule;
+  @Input({ required: true }) loader!: () => Promise<SharedComponentModule>;
   @Input({ required: true }) componentProps!: Record<string, unknown>;
   @Input() wrapperClass?: string;
 
   @ViewChild("container", { static: true }) containerRef!: ElementRef<HTMLElement>;
 
-  private callbacks = inject(MFE_CALLBACKS);
+  readonly status: WritableSignal<"loading" | "mounted" | "error"> = signal("loading");
 
-  // Host div follows the `<className>-wrapper` convention: it derives its class from the
-  // mounted component's `className` so consumers don't need a manual wrapper element.
-  // Pass `wrapperClass` to override the inferred name.
+  private callbacks = inject(MFE_CALLBACKS);
+  private module: SharedComponentModule | null = null;
+
   get resolvedWrapperClass(): string | undefined {
     if (this.wrapperClass) return this.wrapperClass;
     const className = (this.componentProps as { className?: unknown }).className;
@@ -30,13 +33,28 @@ class SharedMfeComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.module.mount(this.containerRef.nativeElement, this.componentProps, {
-      callbacks: this.callbacks,
-    });
+    void this.loadAndMount();
+  }
+
+  private async loadAndMount(): Promise<void> {
+    try {
+      const mod = await this.loader();
+      mod.mount(this.containerRef.nativeElement, this.componentProps, {
+        callbacks: this.callbacks,
+      });
+      this.module = mod;
+      this.status.set("mounted");
+    } catch (error) {
+      console.error("[Shared MFE Load Error]", error);
+      this.status.set("error");
+    }
   }
 
   ngOnDestroy(): void {
-    this.module.unmount(this.containerRef.nativeElement);
+    if (this.module) {
+      this.module.unmount(this.containerRef.nativeElement);
+      this.module = null;
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core";
-import { LinkModule } from "shared/sdk";
+
+import type { LinkProps, SharedComponentModule } from "shared/sdk";
 
 import SharedMfeComponent from "@about/components/shared-mfe/shared-mfe.component";
 
@@ -12,7 +13,8 @@ import SharedMfeComponent from "@about/components/shared-mfe/shared-mfe.componen
   styleUrl: "./about-page.component.css",
 })
 class AboutPageComponent {
-  linkModule = LinkModule;
+  loadLink = (): Promise<SharedComponentModule<LinkProps>> =>
+    import("shared/sdk").then((m) => m.LinkModule);
 
   productLinkProps = {
     id: "link-product",

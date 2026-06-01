@@ -13,7 +13,6 @@ const ContextApp = ({ callbacks }: ContextAppProps): JSX.Element => {
 
   const loadModule = useCallback(() => import("context/ContextApp"), []);
 
-  // No event type check needed — MfeEvent is a single-variant union for now
   const handleEvent = useCallback((event: MfeEvent): void => {
     setCounterValue(event.payload.counter);
   }, []);

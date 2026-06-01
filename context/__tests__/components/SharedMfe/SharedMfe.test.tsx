@@ -1,157 +1,104 @@
-import { render } from "@testing-library/react";
-import { InheritedProvider } from "shared/sdk";
+import { lazy } from "react";
+import { render, screen } from "@testing-library/react";
 
+import type { JSX } from "react";
 import type { RenderResult } from "@testing-library/react";
-import type { SharedMfeProps } from "@context/types/props";
-import type { SharedComponentModule, MfeCallbacks } from "shared/sdk";
 
 import SharedMfe from "@context/components/SharedMfe/SharedMfe";
 
-import { mockModule, mockMount, mockUnmount } from "@tests/__mocks__/module.mock";
-
-interface TestProps {
-  label: string;
+interface DummyProps {
+  id: string;
+  label?: string;
+  className?: string;
 }
 
-const defaultComponentProps: TestProps = { label: "test" };
+interface RenderOptions {
+  component?: React.ComponentType<DummyProps>;
+  componentProps?: DummyProps;
+  wrapperClass?: string;
+}
 
-const renderComponent = (props: Partial<SharedMfeProps<TestProps>> = {}): RenderResult => {
-  const defaultProps: SharedMfeProps<TestProps> = {
-    module: mockModule,
-    componentProps: defaultComponentProps,
-    ...props,
-  };
-  return render(<SharedMfe {...defaultProps} />);
+const Dummy = ({ label = "dummy" }: DummyProps): JSX.Element => (
+  <span data-testid="dummy">{label}</span>
+);
+
+const renderComponent = (options: RenderOptions = {}): RenderResult => {
+  const { component = Dummy, componentProps = { id: "a" }, ...rest } = options;
+
+  return render(<SharedMfe component={component} componentProps={componentProps} {...rest} />);
 };
+
+const hostOf = (result: RenderResult): HTMLElement | null =>
+  result.container.querySelector<HTMLElement>("[data-mfe='shared']");
 
 describe("SharedMfe", () => {
   describe("rendering", () => {
-    it("should render a container div with the shared-mfe class", () => {
-      const { container } = renderComponent();
+    it("should render the provided component with its props", () => {
+      renderComponent({ componentProps: { id: "a", label: "hello" } });
 
-      const div = container.querySelector<HTMLDivElement>(".shared-mfe__container");
+      expect(screen.getByTestId("dummy")).toHaveTextContent("hello");
+    });
 
-      expect(div).toBeInTheDocument();
+    it('should wrap the component in a host div marked data-mfe="shared"', () => {
+      const result = renderComponent();
+
+      expect(hostOf(result)).toBeInTheDocument();
     });
   });
 
-  describe("behavior", () => {
-    it("should call module.mount with the container, props, and no options on mount", () => {
-      renderComponent();
-
-      expect(mockMount).toHaveBeenCalledTimes(1);
-      expect(mockMount).toHaveBeenCalledWith(
-        expect.any(HTMLDivElement),
-        defaultComponentProps,
-        undefined
-      );
-    });
-
-    it("should call module.unmount with the container on cleanup", () => {
-      const { unmount } = renderComponent();
-
-      unmount();
-
-      expect(mockUnmount).toHaveBeenCalledTimes(1);
-      expect(mockUnmount).toHaveBeenCalledWith(expect.any(HTMLDivElement));
-    });
-
-    it("should pass the same container element to mount and unmount", () => {
-      const { container, unmount } = renderComponent();
-      const div = container.querySelector<HTMLDivElement>(".shared-mfe__container");
-
-      unmount();
-
-      expect(mockMount.mock.calls[0][0]).toBe(div);
-      expect(mockUnmount.mock.calls[0][0]).toBe(div);
-    });
-
-    it("should pass callbacks in options when InheritedContext is available", () => {
-      const mockOnNavigate = jest.fn();
-      const mockCallbacks: MfeCallbacks = { onNavigate: mockOnNavigate };
-
-      render(
-        <InheritedProvider callbacks={mockCallbacks}>
-          <SharedMfe module={mockModule} componentProps={defaultComponentProps} />
-        </InheritedProvider>
+  describe("loading state", () => {
+    it("should show the default loading fallback while a lazy component is pending", () => {
+      const Never = lazy(
+        () =>
+          new Promise<{ default: React.ComponentType<DummyProps> }>(() => {
+            // Never resolves: keeps the component suspended in its loading state.
+          })
       );
 
-      expect(mockMount).toHaveBeenCalledWith(expect.any(HTMLDivElement), defaultComponentProps, {
-        callbacks: mockCallbacks,
-      });
+      renderComponent({ component: Never });
+
+      expect(screen.getByLabelText("Loading remote module")).toBeInTheDocument();
     });
+  });
 
-    it("should unmount old module and mount new module when module prop changes", () => {
-      const mockOldMount = jest.fn();
-      const mockOldUnmount = jest.fn();
-      const mockNewMount = jest.fn();
-
-      const oldModule: SharedComponentModule<TestProps> = {
-        mount: mockOldMount,
-        unmount: mockOldUnmount,
-      };
-      const newModule: SharedComponentModule<TestProps> = {
-        mount: mockNewMount,
-        unmount: jest.fn(),
+  describe("error handling", () => {
+    it("should render nothing when the component throws (caught by the error boundary)", () => {
+      jest.spyOn(console, "error").mockImplementation();
+      const Boom = (): never => {
+        throw new Error("boom");
       };
 
-      const { rerender } = render(
-        <SharedMfe module={oldModule} componentProps={defaultComponentProps} />
-      );
+      const result = renderComponent({ component: Boom });
+      const host = hostOf(result);
 
-      expect(mockOldMount).toHaveBeenCalledTimes(1);
-
-      rerender(<SharedMfe module={newModule} componentProps={defaultComponentProps} />);
-
-      expect(mockOldUnmount).toHaveBeenCalledTimes(1);
-      expect(mockNewMount).toHaveBeenCalledTimes(1);
+      expect(host).toBeInTheDocument();
+      expect(host).toBeEmptyDOMElement();
     });
   });
 
   describe("wrapper class", () => {
-    interface WrapperProps {
-      id: string;
-      className?: string;
-    }
+    it("should infer a <className>-wrapper class on the host div", () => {
+      const result = renderComponent({ componentProps: { id: "a", className: "foo" } });
 
-    const createWrapperModule = (): SharedComponentModule<WrapperProps> => ({
-      mount: jest.fn(),
-      unmount: jest.fn(),
-    });
-
-    it("should infer a <className>-wrapper class on the host and keep the base class", () => {
-      const { container } = render(
-        <SharedMfe module={createWrapperModule()} componentProps={{ id: "x", className: "foo" }} />
-      );
-
-      const host = container.querySelector<HTMLDivElement>(".shared-mfe__container");
-
-      expect(host).toHaveClass("foo-wrapper", "shared-mfe__container");
+      expect(hostOf(result)).toHaveClass("foo-wrapper");
     });
 
     it("should let wrapperClass override the inferred name", () => {
-      const { container } = render(
-        <SharedMfe
-          module={createWrapperModule()}
-          componentProps={{ id: "x", className: "foo" }}
-          wrapperClass="bar"
-        />
-      );
+      const result = renderComponent({
+        componentProps: { id: "a", className: "foo" },
+        wrapperClass: "bar",
+      });
 
-      const host = container.querySelector<HTMLDivElement>(".shared-mfe__container");
+      const host = hostOf(result);
 
-      expect(host).toHaveClass("bar", "shared-mfe__container");
+      expect(host).toHaveClass("bar");
       expect(host).not.toHaveClass("foo-wrapper");
     });
 
     it("should add no wrapper class when componentProps has no className", () => {
-      const { container } = render(
-        <SharedMfe module={createWrapperModule()} componentProps={{ id: "x" }} />
-      );
+      const result = renderComponent();
 
-      const host = container.querySelector<HTMLDivElement>(".shared-mfe__container");
-
-      expect(host?.className).toBe("shared-mfe__container");
+      expect(hostOf(result)?.className).toBe("");
     });
   });
 });

@@ -1,4 +1,4 @@
-import { act, render } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import type { RenderResult } from "@testing-library/react";
@@ -49,7 +49,9 @@ describe("ProductApp", () => {
     it("should mount the product module after loading", async () => {
       await renderComponent();
 
-      expect(mockProductMount).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(mockProductMount).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
@@ -57,23 +59,27 @@ describe("ProductApp", () => {
     it("should pass the productId from the URL as mountData", async () => {
       await renderComponent({}, "456");
 
-      expect(mockProductMount).toHaveBeenCalledWith(
-        expect.any(HTMLDivElement),
-        expect.objectContaining({
-          productId: "456",
-        })
-      );
+      await waitFor(() => {
+        expect(mockProductMount).toHaveBeenCalledWith(
+          expect.any(HTMLDivElement),
+          expect.objectContaining({
+            productId: "456",
+          })
+        );
+      });
     });
 
     it("should pass callbacks to the module", async () => {
       await renderComponent();
 
-      expect(mockProductMount).toHaveBeenCalledWith(
-        expect.any(HTMLDivElement),
-        expect.objectContaining({
-          callbacks: mockCallbacks,
-        })
-      );
+      await waitFor(() => {
+        expect(mockProductMount).toHaveBeenCalledWith(
+          expect.any(HTMLDivElement),
+          expect.objectContaining({
+            callbacks: mockCallbacks,
+          })
+        );
+      });
     });
   });
 });

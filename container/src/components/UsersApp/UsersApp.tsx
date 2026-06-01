@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
+import DefaultLoading from "@shared/components/DefaultLoading/DefaultLoading";
 
 import type { JSX } from "react";
 import type { User } from "shared/sdk";
 import type { UsersAppProps } from "@container/types/props";
 
 import RemoteMfe from "@container/components/RemoteMfe/RemoteMfe";
-import DefaultLoading from "@container/components/DefaultLoading/DefaultLoading";
 
 import userService from "@container/services/userService";
 

@@ -39,6 +39,8 @@ const renderPage = async (): Promise<RenderResult> => {
 
   const fixture = TestBed.createComponent(AboutPageComponent);
   fixture.detectChanges();
+  await fixture.whenStable();
+  fixture.detectChanges();
 
   return { fixture, component: fixture.componentInstance };
 };
@@ -60,14 +62,12 @@ describe("AboutPageComponent", () => {
     it("should render two list items in the navigation", async () => {
       await renderPage();
 
-      const listItems = screen.getAllByRole("listitem");
-
-      expect(listItems).toHaveLength(2);
+      expect(screen.getAllByRole("listitem")).toHaveLength(2);
     });
   });
 
   describe("behavior", () => {
-    it("should mount the link module twice", async () => {
+    it("should mount the link module twice once the shared SDK loads", async () => {
       await renderPage();
 
       expect(mockLinkMount).toHaveBeenCalledTimes(2);

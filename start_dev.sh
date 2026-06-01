@@ -1,5 +1,7 @@
 #!/bin/bash
 
+root="$(dirname "$0")"
+
 open_url() {
   case "$(uname -s)" in
     Linux*)  xdg-open "$1" ;;
@@ -8,28 +10,36 @@ open_url() {
   esac
 }
 
-wait_and_open() {
+wait_for() {
   local url="$1"
-  local max_attempts=60
+  local max_attempts="${2:-60}"
 
   for ((i=1; i<=max_attempts; i++)); do
-    if curl -s -o /dev/null -w '' --max-time 2 "$url" 2>/dev/null; then
-      open_url "$url"
-      return
+    if curl -s -o /dev/null --max-time 2 "$url" 2>/dev/null; then
+      return 0
     fi
     sleep 2
   done
+
+  return 1
 }
 
-cd "$(dirname "$0")/shared" && npm install && npm run dev &
-cd "$(dirname "$0")/home" && npm run dev &
-cd "$(dirname "$0")/about" && npm run dev &
-cd "$(dirname "$0")/users" && npm run dev &
-cd "$(dirname "$0")/not-found" && npm run dev &
-cd "$(dirname "$0")/product" && npm run dev &
-cd "$(dirname "$0")/context" && npm run dev &
-cd "$(dirname "$0")/container" && npm run dev &
+wait_and_open() {
+  wait_for "$1" && open_url "$1"
+}
 
+cd "$root/shared" && npm install && npm run dev &
+wait_for "http://localhost:4000"
+
+cd "$root/home" && npm run dev &
+cd "$root/about" && npm run dev &
+cd "$root/users" && npm run dev &
+cd "$root/not-found" && npm run dev &
+cd "$root/product" && npm run dev &
+cd "$root/context" && npm run dev &
+cd "$root/container" && npm run dev &
+
+wait_and_open "http://localhost:4000" &
 wait_and_open "http://localhost:3000" &
 wait_and_open "http://localhost:3010" &
 wait_and_open "http://localhost:3020" &
@@ -37,6 +47,5 @@ wait_and_open "http://localhost:3030" &
 wait_and_open "http://localhost:3040" &
 wait_and_open "http://localhost:3050" &
 wait_and_open "http://localhost:3060" &
-wait_and_open "http://localhost:4000" &
 
 wait

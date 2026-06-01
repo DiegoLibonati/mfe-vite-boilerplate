@@ -1,108 +1,55 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { Suspense, lazy, useMemo, useState } from "react";
+import DefaultLoading from "@shared/components/DefaultLoading/DefaultLoading";
 
 import type { JSX } from "react";
 import type { MfeModule } from "shared/sdk";
 import type { RemoteMfeProps } from "@container/types/props";
-import type { RemoteMfeState } from "@container/types/states";
 
-import DefaultLoading from "@container/components/DefaultLoading/DefaultLoading";
-
-import "@container/components/RemoteMfe/RemoteMfe.css";
-
-const INITIAL_STATE: RemoteMfeState = { status: "loading", error: null };
+import RemoteMount from "@container/components/RemoteMfe/RemoteMount";
+import RemoteErrorBoundary from "@container/components/RemoteMfe/RemoteErrorBoundary";
 
 const RemoteMfe = ({
   loadModule,
   callbacks,
   mountData,
-  loadingFallback,
-  errorFallback,
   wrapperClass,
 }: RemoteMfeProps): JSX.Element => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const moduleRef = useRef<MfeModule | null>(null);
-  const [remoteState, setRemoteState] = useState<RemoteMfeState>(INITIAL_STATE);
   const [retryKey, setRetryKey] = useState(0);
 
-  const handleRetry = useCallback((): void => {
-    setRemoteState(INITIAL_STATE);
-    moduleRef.current = null;
-    setRetryKey((k) => k + 1);
-  }, []);
-
-  const handleMfeError = useCallback((error: Error): void => {
-    setRemoteState({ status: "error", error });
-  }, []);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    let cancelled = false;
-
-    const loadAndMount = async (): Promise<void> => {
-      try {
-        const raw = await loadModule();
-        const mod: MfeModule = "default" in raw ? raw.default : raw;
-
-        if (cancelled) return;
-
-        moduleRef.current = mod;
-        mod.mount(container, { callbacks, onError: handleMfeError, ...mountData });
-        setRemoteState({ status: "mounted", error: null });
-      } catch (err) {
-        if (cancelled) return;
-        console.error("[MFE Load Error]", err);
-        setRemoteState({
-          status: "error",
-          error: err instanceof Error ? err : new Error(String(err)),
-        });
-      }
-    };
-
-    void loadAndMount();
-
-    return (): void => {
-      cancelled = true;
-      if (moduleRef.current) {
-        moduleRef.current.unmount(container);
-        moduleRef.current = null;
-      }
-    };
-  }, [loadModule, callbacks, mountData, retryKey, handleMfeError]);
-
-  // The host div owns the `<className>-wrapper` convention: it derives its class from the
-  // mounted remote's `mountData.className` so consumers don't need a manual wrapper element.
-  // Pass `wrapperClass` to override the inferred name.
   const rawClassName = mountData?.className;
   const inferredWrapperClass =
     typeof rawClassName === "string" && rawClassName ? `${rawClassName}-wrapper` : undefined;
   const resolvedWrapperClass = wrapperClass ?? inferredWrapperClass;
 
+  const LazyRemote = useMemo(
+    () =>
+      lazy(async () => {
+        const raw = await loadModule();
+        const mod: MfeModule = "default" in raw ? raw.default : raw;
+        return {
+          default: (): JSX.Element => (
+            <RemoteMount
+              mod={mod}
+              callbacks={callbacks}
+              mountData={mountData}
+              wrapperClass={resolvedWrapperClass}
+            />
+          ),
+        };
+      }),
+    [loadModule, callbacks, mountData, resolvedWrapperClass, retryKey]
+  );
+
+  const handleRetry = (): void => {
+    setRetryKey((key) => key + 1);
+  };
+
   return (
-    <>
-      {remoteState.status === "loading" && (loadingFallback ?? <DefaultLoading />)}
-      {remoteState.status === "error" &&
-        (errorFallback ?? (
-          <div className="remote-mfe-error" role="alert">
-            <h2 className="remote-mfe-error__title">This section is temporarily unavailable</h2>
-            <p className="remote-mfe-error__message">{remoteState.error?.message}</p>
-            <button type="button" className="remote-mfe-error__retry" onClick={handleRetry}>
-              Retry
-            </button>
-          </div>
-        ))}
-      <div
-        ref={containerRef}
-        className={[
-          resolvedWrapperClass,
-          "remote-mfe__container",
-          remoteState.status !== "mounted" ? "remote-mfe__container--hidden" : undefined,
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      />
-    </>
+    <RemoteErrorBoundary key={retryKey} onRetry={handleRetry}>
+      <Suspense fallback={<DefaultLoading />}>
+        <LazyRemote />
+      </Suspense>
+    </RemoteErrorBoundary>
   );
 };
 

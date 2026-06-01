@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { LinkModule, ActionModule } from "shared/sdk";
+import { lazy, useState } from "react";
 
 import type { JSX } from "react";
 
 import SharedMfe from "@home/components/SharedMfe/SharedMfe";
 
 import "@home/pages/HomePage/HomePage.css";
+
+const Link = lazy(() => import("shared/sdk").then((m) => ({ default: m.Link })));
+const Action = lazy(() => import("shared/sdk").then((m) => ({ default: m.Action })));
 
 const HomePage = (): JSX.Element => {
   const [shouldThrow, setShouldThrow] = useState(false);
@@ -22,7 +24,7 @@ const HomePage = (): JSX.Element => {
         <ul className="links">
           <li>
             <SharedMfe
-              module={LinkModule}
+              component={Link}
               componentProps={{
                 id: "link-about",
                 ariaLabel: "Go to About Page",
@@ -34,7 +36,7 @@ const HomePage = (): JSX.Element => {
           </li>
           <li>
             <SharedMfe
-              module={LinkModule}
+              component={Link}
               componentProps={{
                 id: "link-about-new-window",
                 ariaLabel: "Go to About Page in a new window",
@@ -45,7 +47,7 @@ const HomePage = (): JSX.Element => {
           </li>
           <li>
             <SharedMfe
-              module={LinkModule}
+              component={Link}
               componentProps={{
                 id: "link-users",
                 ariaLabel: "Go to Users Page",
@@ -60,7 +62,7 @@ const HomePage = (): JSX.Element => {
 
       <section className="home-page__demo" aria-label="Error boundary demo">
         <SharedMfe
-          module={ActionModule}
+          component={Action}
           componentProps={{
             id: "action-trigger-error",
             ariaLabel: "Trigger error boundary",

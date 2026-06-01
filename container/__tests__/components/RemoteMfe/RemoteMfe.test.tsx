@@ -31,7 +31,7 @@ describe("RemoteMfe", () => {
     it("should show the default loading fallback while the module is loading", async () => {
       mockLoadModule.mockReturnValue(
         new Promise(() => {
-          // Empty fn
+          // Never resolves: keeps Suspense in its loading state.
         })
       );
 
@@ -39,56 +39,32 @@ describe("RemoteMfe", () => {
 
       expect(screen.getByLabelText("Loading remote module")).toBeInTheDocument();
     });
-
-    it("should show a custom loading fallback when provided", async () => {
-      mockLoadModule.mockReturnValue(
-        new Promise(() => {
-          // Empty fn
-        })
-      );
-
-      await renderComponent({ loadingFallback: <div>Custom loading</div> });
-
-      expect(screen.getByText("Custom loading")).toBeInTheDocument();
-      expect(screen.queryByLabelText("Loading remote module")).not.toBeInTheDocument();
-    });
-
-    it("should hide the container div while loading", async () => {
-      mockLoadModule.mockReturnValue(
-        new Promise(() => {
-          // Empty fn
-        })
-      );
-
-      await renderComponent();
-
-      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
-      expect(container).toHaveClass("remote-mfe__container--hidden");
-    });
   });
 
   describe("mounted state", () => {
-    it("should hide loading after the module loads successfully", async () => {
+    it("should mount the loaded module with callbacks and an onError handler", async () => {
       mockLoadModule.mockResolvedValue({ default: mockMfeModule });
 
       await renderComponent();
 
-      expect(screen.queryByLabelText("Loading remote module")).not.toBeInTheDocument();
-    });
-
-    it("should call mount on the loaded module", async () => {
-      mockLoadModule.mockResolvedValue({ default: mockMfeModule });
-
-      await renderComponent();
-
-      expect(mockMfeModule.mount).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(mockMfeModule.mount).toHaveBeenCalledTimes(1);
+      });
       expect(mockMfeModule.mount).toHaveBeenCalledWith(
         expect.any(HTMLDivElement),
-        expect.objectContaining({
-          callbacks: mockCallbacks,
-          onError: expect.any(Function),
-        })
+        expect.objectContaining({ callbacks: mockCallbacks, onError: expect.any(Function) })
       );
+    });
+
+    it("should hide the loading fallback once mounted", async () => {
+      mockLoadModule.mockResolvedValue({ default: mockMfeModule });
+
+      await renderComponent();
+
+      await waitFor(() => {
+        expect(mockMfeModule.mount).toHaveBeenCalled();
+      });
+      expect(screen.queryByLabelText("Loading remote module")).not.toBeInTheDocument();
     });
 
     it("should handle modules without a default export", async () => {
@@ -96,7 +72,9 @@ describe("RemoteMfe", () => {
 
       await renderComponent();
 
-      expect(mockMfeModule.mount).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(mockMfeModule.mount).toHaveBeenCalledTimes(1);
+      });
     });
 
     it("should pass mountData to the module mount function", async () => {
@@ -104,21 +82,24 @@ describe("RemoteMfe", () => {
 
       await renderComponent({ mountData: { productId: "abc-123" } });
 
-      expect(mockMfeModule.mount).toHaveBeenCalledWith(
-        expect.any(HTMLDivElement),
-        expect.objectContaining({
-          productId: "abc-123",
-        })
-      );
+      await waitFor(() => {
+        expect(mockMfeModule.mount).toHaveBeenCalledWith(
+          expect.any(HTMLDivElement),
+          expect.objectContaining({ productId: "abc-123" })
+        );
+      });
     });
 
-    it("should remove the hidden class from the container when mounted", async () => {
+    it("should reveal the mounted container", async () => {
       mockLoadModule.mockResolvedValue({ default: mockMfeModule });
 
       await renderComponent();
 
-      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
-      expect(container).not.toHaveClass("remote-mfe__container--hidden");
+      await waitFor(() => {
+        expect(document.querySelector(".remote-mfe__container")).not.toHaveClass(
+          "remote-mfe__container--hidden"
+        );
+      });
     });
   });
 
@@ -129,22 +110,13 @@ describe("RemoteMfe", () => {
 
       await renderComponent();
 
-      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(await screen.findByRole("alert")).toBeInTheDocument();
       expect(screen.getByText("This section is temporarily unavailable")).toBeInTheDocument();
       expect(screen.getByText("Failed to load")).toBeInTheDocument();
     });
 
-    it("should show a custom error fallback when provided", async () => {
+    it("should show the error UI when the module calls onError", async () => {
       jest.spyOn(console, "error").mockImplementation();
-      mockLoadModule.mockRejectedValue(new Error("Load error"));
-
-      await renderComponent({ errorFallback: <div>Custom error UI</div> });
-
-      expect(screen.getByText("Custom error UI")).toBeInTheDocument();
-      expect(screen.queryByText("This section is temporarily unavailable")).not.toBeInTheDocument();
-    });
-
-    it("should show error UI when the module calls onError", async () => {
       let capturedOnError: ((error: Error) => void) | undefined;
       mockMfeModule.mount.mockImplementation(
         (_container: HTMLElement, options: MfeMountOptions) => {
@@ -154,12 +126,15 @@ describe("RemoteMfe", () => {
       mockLoadModule.mockResolvedValue({ default: mockMfeModule });
 
       await renderComponent();
+      await waitFor(() => {
+        expect(capturedOnError).toBeDefined();
+      });
 
       act(() => {
         capturedOnError?.(new Error("Runtime error"));
       });
 
-      expect(screen.getByText("Runtime error")).toBeInTheDocument();
+      expect(await screen.findByText("Runtime error")).toBeInTheDocument();
     });
 
     it("should convert non-Error thrown values to Error objects", async () => {
@@ -168,18 +143,8 @@ describe("RemoteMfe", () => {
 
       await renderComponent();
 
-      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(await screen.findByRole("alert")).toBeInTheDocument();
       expect(screen.getByText("string error")).toBeInTheDocument();
-    });
-
-    it("should hide the container div when in error state", async () => {
-      jest.spyOn(console, "error").mockImplementation();
-      mockLoadModule.mockRejectedValue(new Error("Load error"));
-
-      await renderComponent();
-
-      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
-      expect(container).toHaveClass("remote-mfe__container--hidden");
     });
   });
 
@@ -192,6 +157,7 @@ describe("RemoteMfe", () => {
         .mockResolvedValueOnce({ default: mockMfeModule });
 
       await renderComponent();
+      await screen.findByRole("button", { name: "Retry" });
 
       await user.click(screen.getByRole("button", { name: "Retry" }));
 
@@ -206,9 +172,12 @@ describe("RemoteMfe", () => {
     it("should unmount the module when the component unmounts", async () => {
       mockLoadModule.mockResolvedValue({ default: mockMfeModule });
 
-      const { unmount } = await renderComponent();
+      const result = await renderComponent();
+      await waitFor(() => {
+        expect(mockMfeModule.mount).toHaveBeenCalled();
+      });
 
-      unmount();
+      result.unmount();
 
       expect(mockMfeModule.unmount).toHaveBeenCalledTimes(1);
       expect(mockMfeModule.unmount).toHaveBeenCalledWith(expect.any(HTMLDivElement));
@@ -217,57 +186,40 @@ describe("RemoteMfe", () => {
     it("should not call unmount if the module was never loaded", async () => {
       mockLoadModule.mockReturnValue(
         new Promise(() => {
-          // Empty fn
+          // Never resolves.
         })
       );
 
-      const { unmount } = await renderComponent();
+      const result = await renderComponent();
 
-      unmount();
+      result.unmount();
 
       expect(mockMfeModule.unmount).not.toHaveBeenCalled();
     });
   });
 
   describe("wrapper class", () => {
-    it("should infer a <className>-wrapper class on the host and keep the base class", async () => {
-      mockLoadModule.mockReturnValue(
-        new Promise(() => {
-          // Empty fn
-        })
-      );
+    it("should infer a <className>-wrapper class on the mounted host", async () => {
+      mockLoadModule.mockResolvedValue({ default: mockMfeModule });
 
       await renderComponent({ mountData: { className: "foo" } });
 
-      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
-      expect(container).toHaveClass("foo-wrapper", "remote-mfe__container");
+      await waitFor(() => {
+        const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
+        expect(container).toHaveClass("foo-wrapper", "remote-mfe__container");
+      });
     });
 
     it("should let wrapperClass override the inferred name", async () => {
-      mockLoadModule.mockReturnValue(
-        new Promise(() => {
-          // Empty fn
-        })
-      );
+      mockLoadModule.mockResolvedValue({ default: mockMfeModule });
 
       await renderComponent({ mountData: { className: "foo" }, wrapperClass: "bar" });
 
-      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
-      expect(container).toHaveClass("bar", "remote-mfe__container");
-      expect(container).not.toHaveClass("foo-wrapper");
-    });
-
-    it("should add no wrapper class when mountData has no className", async () => {
-      mockLoadModule.mockReturnValue(
-        new Promise(() => {
-          // Empty fn
-        })
-      );
-
-      await renderComponent();
-
-      const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
-      expect(container?.className).toBe("remote-mfe__container remote-mfe__container--hidden");
+      await waitFor(() => {
+        const container = document.querySelector<HTMLDivElement>(".remote-mfe__container");
+        expect(container).toHaveClass("bar", "remote-mfe__container");
+        expect(container).not.toHaveClass("foo-wrapper");
+      });
     });
   });
 });

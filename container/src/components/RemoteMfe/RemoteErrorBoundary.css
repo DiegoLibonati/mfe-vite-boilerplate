@@ -33,14 +33,6 @@
   white-space: nowrap;
 }
 
-.remote-mfe__container {
-  display: block;
-}
-
-.remote-mfe__container--hidden {
-  display: none;
-}
-
 @media (max-width: 768px) {
   .remote-mfe-error__retry {
     width: 100%;

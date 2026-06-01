@@ -9,15 +9,17 @@ import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 import { resolveAngularTemplates } from "@tests/__mocks__/resolve-templates.mock";
 import { mockCallbacks } from "@tests/__mocks__/callbacks.mock";
 
-interface SharedMfeInputs {
-  module: SharedComponentModule;
-  componentProps: Record<string, unknown>;
+interface RenderInputs {
+  module?: SharedComponentModule;
+  loader?: () => Promise<SharedComponentModule>;
+  componentProps?: Record<string, unknown>;
   wrapperClass?: string;
 }
 
 interface RenderResult {
   fixture: ComponentFixture<SharedMfeComponent>;
   component: SharedMfeComponent;
+  module: SharedComponentModule;
 }
 
 const createMockModule = (): SharedComponentModule => ({
@@ -29,12 +31,11 @@ beforeAll(async () => {
   await resolveAngularTemplates();
 });
 
-const renderComponent = async (inputs: Partial<SharedMfeInputs> = {}): Promise<RenderResult> => {
-  const defaultInputs: SharedMfeInputs = {
-    module: createMockModule(),
-    componentProps: { id: "test-prop" },
-    ...inputs,
-  };
+const renderComponent = async (inputs: RenderInputs = {}): Promise<RenderResult> => {
+  const mockModule = inputs.module ?? createMockModule();
+  const loader =
+    inputs.loader ?? ((): Promise<SharedComponentModule> => Promise.resolve(mockModule));
+  const componentProps = inputs.componentProps ?? { id: "test-prop" };
 
   await TestBed.configureTestingModule({
     imports: [SharedMfeComponent],
@@ -42,66 +43,73 @@ const renderComponent = async (inputs: Partial<SharedMfeInputs> = {}): Promise<R
   }).compileComponents();
 
   const fixture = TestBed.createComponent(SharedMfeComponent);
-  Object.entries(defaultInputs).forEach(([key, value]) => {
-    fixture.componentRef.setInput(key, value);
-  });
+  fixture.componentRef.setInput("loader", loader);
+  fixture.componentRef.setInput("componentProps", componentProps);
+  if (inputs.wrapperClass !== undefined) {
+    fixture.componentRef.setInput("wrapperClass", inputs.wrapperClass);
+  }
+
+  fixture.detectChanges();
+  await fixture.whenStable();
   fixture.detectChanges();
 
-  return { fixture, component: fixture.componentInstance };
+  return { fixture, component: fixture.componentInstance, module: mockModule };
 };
+
+const containerOf = (fixture: ComponentFixture<SharedMfeComponent>): HTMLDivElement | null =>
+  (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
 
 describe("SharedMfeComponent", () => {
   describe("rendering", () => {
-    it("should render the container element", async () => {
+    it("should render the container element once mounted", async () => {
       const { fixture } = await renderComponent();
 
-      const container = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
+      expect(containerOf(fixture)).not.toBeNull();
+    });
 
-      expect(container).not.toBeNull();
+    it("should show the default loading fallback while the module is loading", async () => {
+      const { fixture, module } = await renderComponent({
+        loader: () =>
+          new Promise<SharedComponentModule>(() => {
+            // Never resolves: keeps the component in its loading state.
+          }),
+      });
+
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector("app-default-loading")
+      ).not.toBeNull();
+      expect(module.mount).not.toHaveBeenCalled();
     });
   });
 
   describe("lifecycle", () => {
-    it("should call module.mount with the container element, component props and callbacks on init", async () => {
-      const mockModule = createMockModule();
+    it("should call module.mount with the container element, component props and callbacks", async () => {
       const props = { id: "link-1", href: "/test" };
 
-      const { fixture } = await renderComponent({
-        module: mockModule,
-        componentProps: props,
-      });
+      const { fixture, module } = await renderComponent({ componentProps: props });
 
-      const containerDiv = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>(
-        "div"
-      );
-
-      expect(mockModule.mount).toHaveBeenCalledTimes(1);
-      expect(mockModule.mount).toHaveBeenCalledWith(containerDiv, props, {
+      expect(module.mount).toHaveBeenCalledTimes(1);
+      expect(module.mount).toHaveBeenCalledWith(containerOf(fixture), props, {
         callbacks: mockCallbacks,
       });
     });
 
     it("should call module.unmount with the container element on destroy", async () => {
-      const mockModule = createMockModule();
-      const { fixture } = await renderComponent({ module: mockModule });
+      const { fixture, module } = await renderComponent();
       const containerElement = fixture.componentInstance.containerRef.nativeElement;
 
       fixture.destroy();
 
-      expect(mockModule.unmount).toHaveBeenCalledTimes(1);
-      expect(mockModule.unmount).toHaveBeenCalledWith(containerElement);
+      expect(module.unmount).toHaveBeenCalledTimes(1);
+      expect(module.unmount).toHaveBeenCalledWith(containerElement);
     });
   });
 
   describe("wrapper class", () => {
     it("should infer a <className>-wrapper class on the host div", async () => {
-      const { fixture } = await renderComponent({
-        componentProps: { id: "x", className: "foo" },
-      });
+      const { fixture } = await renderComponent({ componentProps: { id: "x", className: "foo" } });
 
-      const div = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
-
-      expect(div).toHaveClass("foo-wrapper");
+      expect(containerOf(fixture)).toHaveClass("foo-wrapper");
     });
 
     it("should let wrapperClass override the inferred name", async () => {
@@ -110,7 +118,7 @@ describe("SharedMfeComponent", () => {
         wrapperClass: "bar",
       });
 
-      const div = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
+      const div = containerOf(fixture);
 
       expect(div).toHaveClass("bar");
       expect(div).not.toHaveClass("foo-wrapper");
@@ -119,9 +127,7 @@ describe("SharedMfeComponent", () => {
     it("should add no class when componentProps has no className", async () => {
       const { fixture } = await renderComponent({ componentProps: { id: "x" } });
 
-      const div = (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>("div");
-
-      expect(div?.className).toBe("");
+      expect(containerOf(fixture)?.className).toBe("");
     });
   });
 });

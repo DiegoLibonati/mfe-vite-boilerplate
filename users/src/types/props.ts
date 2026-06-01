@@ -1,9 +1,9 @@
 import type { SharedComponentModule, User, UserCompany } from "shared/sdk";
 
 export interface SharedMfeProps<P> {
-  module: SharedComponentModule<P>;
+  loader: () => Promise<SharedComponentModule<P>>;
   componentProps: P;
-  wrapperClass?: string;
+  wrapperClass?: string | undefined;
 }
 
 export interface UserCardProps {

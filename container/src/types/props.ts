@@ -8,9 +8,19 @@ export interface RemoteMfeProps {
   loadModule: () => Promise<MfeModule | { default: MfeModule }>;
   callbacks: MfeCallbacks;
   mountData?: Record<string, unknown>;
-  loadingFallback?: React.ReactNode;
-  errorFallback?: React.ReactNode;
   wrapperClass?: string;
+}
+
+export interface RemoteMountProps {
+  mod: MfeModule;
+  callbacks: MfeCallbacks;
+  mountData: Record<string, unknown> | undefined;
+  wrapperClass: string | undefined;
+}
+
+export interface RemoteErrorBoundaryProps {
+  onRetry: () => void;
+  children: React.ReactNode;
 }
 
 export interface UsersAppProps {

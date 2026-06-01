@@ -24,17 +24,22 @@ export const ContainerRouter = (): JSX.Element => {
   return (
     <Routes>
       <Route element={<PublicRoute />}>
-        <Route path="/" element={<RemoteMfe loadModule={loadHomeModule} callbacks={callbacks} />} />
+        <Route
+          path="/"
+          element={<RemoteMfe key="home" loadModule={loadHomeModule} callbacks={callbacks} />}
+        />
         <Route
           path="/about"
-          element={<RemoteMfe loadModule={loadAboutModule} callbacks={callbacks} />}
+          element={<RemoteMfe key="about" loadModule={loadAboutModule} callbacks={callbacks} />}
         />
         <Route path="/users" element={<UsersApp callbacks={callbacks} />} />
         <Route path="/context" element={<ContextApp callbacks={callbacks} />} />
         <Route path="/products/:productId" element={<ProductApp callbacks={callbacks} />} />
         <Route
           path="/not-found"
-          element={<RemoteMfe loadModule={loadNotFoundModule} callbacks={callbacks} />}
+          element={
+            <RemoteMfe key="not-found" loadModule={loadNotFoundModule} callbacks={callbacks} />
+          }
         />
       </Route>
 

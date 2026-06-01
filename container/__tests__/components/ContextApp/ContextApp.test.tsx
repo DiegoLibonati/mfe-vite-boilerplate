@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 
 import type { RenderResult } from "@testing-library/react";
 import type { MfeMountOptions } from "shared/sdk";
@@ -41,14 +41,18 @@ describe("ContextApp", () => {
     it("should not show the counter banner initially", async () => {
       await renderComponent();
 
-      expect(mockContextMount).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockContextMount).toHaveBeenCalled();
+      });
       expect(screen.queryByRole("status")).not.toBeInTheDocument();
     });
 
     it("should mount the context remote module", async () => {
       await renderComponent();
 
-      expect(mockContextMount).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(mockContextMount).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
@@ -63,7 +67,7 @@ describe("ContextApp", () => {
 
       await renderComponent();
 
-      expect(screen.getByRole("status")).toBeInTheDocument();
+      expect(await screen.findByRole("status")).toBeInTheDocument();
       expect(screen.getByText("42")).toBeInTheDocument();
       expect(screen.getByText("Counter value received by host:")).toBeInTheDocument();
     });
@@ -75,21 +79,25 @@ describe("ContextApp", () => {
 
       await renderComponent();
 
-      expect(mockCallbacks.onNavigate).toHaveBeenCalledWith("/test-path");
+      await waitFor(() => {
+        expect(mockCallbacks.onNavigate).toHaveBeenCalledWith("/test-path");
+      });
     });
 
     it("should include onEvent in the enhanced callbacks", async () => {
       await renderComponent();
 
-      expect(mockContextMount).toHaveBeenCalledWith(
-        expect.any(HTMLDivElement),
-        expect.objectContaining({
-          callbacks: expect.objectContaining({
-            onNavigate: expect.any(Function),
-            onEvent: expect.any(Function),
-          }),
-        })
-      );
+      await waitFor(() => {
+        expect(mockContextMount).toHaveBeenCalledWith(
+          expect.any(HTMLDivElement),
+          expect.objectContaining({
+            callbacks: expect.objectContaining({
+              onNavigate: expect.any(Function),
+              onEvent: expect.any(Function),
+            }),
+          })
+        );
+      });
     });
   });
 });

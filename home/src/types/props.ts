@@ -1,7 +1,5 @@
-import type { SharedComponentModule } from "shared/sdk";
-
 export interface SharedMfeProps<P> {
-  module: SharedComponentModule<P>;
+  component: React.ComponentType<P>;
   componentProps: P;
   wrapperClass?: string;
 }

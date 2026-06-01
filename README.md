@@ -293,7 +293,7 @@ mfe-vite-boilerplate/
 │   └── src/
 │       ├── exports.ts              # Public API barrel (exposed as ./sdk → imported as shared/sdk)
 │       ├── mount.tsx               # Universal React app mount/unmount factory
-│       ├── components/             # Link, Action, MfeErrorBoundary (+ component mounts)
+│       ├── components/             # Link, Action, MfeErrorBoundary, DefaultLoading (+ component mounts)
 │       ├── contexts/               # InheritedContext / InheritedProvider
 │       ├── hooks/                  # useInheritedContext
 │       ├── helpers/                # createComponentMount<P>
@@ -304,7 +304,7 @@ mfe-vite-boilerplate/
 │   └── src/
 │       ├── App.tsx                 # BrowserRouter + ContainerRouter
 │       ├── router/                 # ContainerRouter, PublicRoute
-│       ├── components/             # RemoteMfe, UsersApp, ProductApp, ContextApp, DefaultLoading, ErrorBoundary
+│       ├── components/             # RemoteMfe (+ RemoteMount, RemoteErrorBoundary), UsersApp, ProductApp, ContextApp, ErrorBoundary
 │       ├── hooks/                  # useMfeCallbacks (wraps onNavigate)
 │       ├── services/               # userService (fetch /api/users)
 │       ├── constants/              # envs.ts
@@ -412,12 +412,22 @@ Each framework implements it natively:
 
 ### Host MFE Loader
 
-`container/src/components/RemoteMfe.tsx` is a generic loader used for every remote:
+`container/src/components/RemoteMfe/` loads every remote. It is split into `RemoteMfe` (orchestrator), `RemoteMount` (imperative mount), and `RemoteErrorBoundary`:
 
-1. Receives a `loadModule` async import, `callbacks`, and optional `mountData`.
-2. On mount, dynamically imports the remote module, normalizes `default` vs named export, and calls `mod.mount(container, { callbacks, onError, ...mountData })`.
-3. Shows `DefaultLoading` while loading and a retryable error panel (`role="alert"`) if the remote fails.
-4. On unmount/route change, calls `mod.unmount(container)` and cancels in-flight loads.
+1. `RemoteMfe` receives a `loadModule` async import, `callbacks`, and optional `mountData`, and builds a `React.lazy` component that resolves the remote and normalizes `default` vs named export.
+2. `<Suspense>` shows the shared `DefaultLoading` while the remote entry chunk loads; `RemoteErrorBoundary` shows a retryable panel (`role="alert"`) if the import or mount fails.
+3. `RemoteMount` mounts imperatively in an effect — `mod.mount(container, { callbacks, onError, ...mountData })` — deferred to a microtask and guarded by a `cancelled` flag so React StrictMode's mount → cleanup → mount cycle can't call `mod.mount` twice on the same node.
+4. On unmount/route change it calls `mod.unmount(container)`. Each route keys its `RemoteMfe` by remote (`key="home"`, `key="about"`, …) so navigating swaps to a clean fresh mount instead of reusing the previous instance.
+
+### Loading Shared Components
+
+Pages never bind the shared SDK statically — they load it lazily through a per-framework `SharedMfe` wrapper that uses each framework's native "suspense" primitive and the shared `DefaultLoading` fallback. The contract is identical everywhere (pass a lazy loader + props → get a shared loading fallback + error handling); only the mechanism differs, because `Link`/`Action` are React components:
+
+- **React** (`home`/`product`/`context`) — `React.lazy(() => import("shared/sdk").then(m => ({ default: m.Link })))` rendered **directly** inside `<Suspense>` + `MfeErrorBoundary`. No imperative bridge is needed; the host `<div data-mfe="shared">` preserves the component's scoped CSS.
+- **Vue** (`users`) — `<Suspense>` + a top-level `await loader()` in `SharedMfeMount.vue`, then imperative `mount`/`unmount` (React can't render as a native Vue child).
+- **Angular** (`about`) — a `status` signal with `@if`/`@loading` showing `DefaultLoading`, then imperative `mount`/`unmount` in `ngAfterViewInit`.
+
+The imperative `mount`/`unmount` bridge (`LinkModule`/`ActionModule` via `createComponentMount<P>`) is therefore only used by the Vue and Angular hosts.
 
 ### Cross-MFE Communication
 

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { LinkModule } from "shared/sdk";
-
-import type { LinkProps } from "shared/sdk";
+import type { LinkProps, SharedComponentModule } from "shared/sdk";
 import type { UsersPageProps } from "@users/types/props";
 
 import UserCard from "@users/components/UserCard/UserCard.vue";
 import SharedMfe from "@users/components/SharedMfe/SharedMfe.vue";
 
 defineProps<UsersPageProps>();
+
+const loadLink = (): Promise<SharedComponentModule<LinkProps>> =>
+  import("shared/sdk").then((m) => m.LinkModule);
 
 const homeLinkProps: Omit<LinkProps, "children"> & { children: string } = {
   id: "link-home",
@@ -38,7 +39,7 @@ const homeLinkProps: Omit<LinkProps, "children"> & { children: string } = {
     <nav aria-label="Page navigation">
       <ul class="links">
         <li>
-          <SharedMfe :module="LinkModule" :component-props="homeLinkProps" />
+          <SharedMfe :loader="loadLink" :component-props="homeLinkProps" />
         </li>
       </ul>
     </nav>

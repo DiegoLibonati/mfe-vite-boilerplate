@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/vue";
+import { flushPromises } from "@vue/test-utils";
 import { vi } from "vitest";
 
 import type { RenderResult } from "@testing-library/vue";
@@ -93,8 +94,9 @@ describe("UsersPage", () => {
   });
 
   describe("home link", () => {
-    it("should mount the LinkModule with the home link props and the injected callbacks", () => {
+    it("should mount the LinkModule with the home link props and the injected callbacks", async () => {
       renderPage();
+      await flushPromises();
 
       expect(mockLinkModuleMountSpy).toHaveBeenCalledTimes(1);
       expect(mockLinkModuleMountSpy).toHaveBeenCalledWith(
@@ -110,8 +112,9 @@ describe("UsersPage", () => {
       );
     });
 
-    it("should unmount the LinkModule when the page is unmounted", () => {
+    it("should unmount the LinkModule when the page is unmounted", async () => {
       const result = renderPage();
+      await flushPromises();
 
       result.unmount();
 

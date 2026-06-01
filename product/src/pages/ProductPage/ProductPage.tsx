@@ -1,4 +1,4 @@
-import { LinkModule, ActionModule } from "shared/sdk";
+import { lazy } from "react";
 
 import type { JSX } from "react";
 import type { ProductPageProps } from "@product/types/props";
@@ -6,6 +6,9 @@ import type { ProductPageProps } from "@product/types/props";
 import SharedMfe from "@product/components/SharedMfe/SharedMfe";
 
 import "@product/pages/ProductPage/ProductPage.css";
+
+const Link = lazy(() => import("shared/sdk").then((m) => ({ default: m.Link })));
+const Action = lazy(() => import("shared/sdk").then((m) => ({ default: m.Action })));
 
 const ProductPage = ({ productId }: ProductPageProps): JSX.Element => {
   const alertProductId = (): void => {
@@ -20,7 +23,7 @@ const ProductPage = ({ productId }: ProductPageProps): JSX.Element => {
         <ul className="links">
           <li>
             <SharedMfe
-              module={LinkModule}
+              component={Link}
               componentProps={{
                 id: "product-link-not-found",
                 ariaLabel: "Go to an unknown page",
@@ -35,7 +38,7 @@ const ProductPage = ({ productId }: ProductPageProps): JSX.Element => {
 
       <section className="actions" aria-label="Product actions">
         <SharedMfe
-          module={ActionModule}
+          component={Action}
           componentProps={{
             id: "action-show-product-id",
             ariaLabel: `Show product ID ${productId}`,

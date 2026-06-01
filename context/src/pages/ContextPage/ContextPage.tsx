@@ -1,4 +1,4 @@
-import { LinkModule, ActionModule } from "shared/sdk";
+import { lazy } from "react";
 
 import type { JSX } from "react";
 
@@ -7,6 +7,9 @@ import SharedMfe from "@context/components/SharedMfe/SharedMfe";
 import { useCounterContext } from "@context/hooks/useCounterContext";
 
 import "@context/pages/ContextPage/ContextPage.css";
+
+const Link = lazy(() => import("shared/sdk").then((m) => ({ default: m.Link })));
+const Action = lazy(() => import("shared/sdk").then((m) => ({ default: m.Action })));
 
 const ContextPage = (): JSX.Element => {
   const { counterState, addCounter, subtractCounter } = useCounterContext();
@@ -17,7 +20,7 @@ const ContextPage = (): JSX.Element => {
 
       <section className="counter" aria-label="Counter">
         <SharedMfe
-          module={ActionModule}
+          component={Action}
           componentProps={{
             id: "counter-subtract",
             ariaLabel: "Subtract 1 from counter",
@@ -39,7 +42,7 @@ const ContextPage = (): JSX.Element => {
         </output>
 
         <SharedMfe
-          module={ActionModule}
+          component={Action}
           componentProps={{
             id: "counter-plus",
             ariaLabel: "Add 1 to counter",
@@ -56,7 +59,7 @@ const ContextPage = (): JSX.Element => {
         <ul className="links">
           <li>
             <SharedMfe
-              module={LinkModule}
+              component={Link}
               componentProps={{
                 id: "link-not-exists",
                 ariaLabel: "Go to unknown page",

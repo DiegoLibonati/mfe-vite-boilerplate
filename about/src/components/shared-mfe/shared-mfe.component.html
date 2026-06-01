@@ -1,1 +1,4 @@
-<div #container [class]="resolvedWrapperClass"></div>
+@if (status() === 'loading') {
+  <app-default-loading />
+}
+<div #container [class]="resolvedWrapperClass" [hidden]="status() !== 'mounted'"></div>
