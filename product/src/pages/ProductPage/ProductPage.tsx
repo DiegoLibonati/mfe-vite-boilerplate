@@ -31,6 +31,7 @@ const ProductPage = ({ productId }: ProductPageProps): JSX.Element => {
                 target: "_self",
                 children: "Go to Not Exists Page",
               }}
+              loadingClass="product-page__link-loader"
             />
           </li>
         </ul>
@@ -45,6 +46,7 @@ const ProductPage = ({ productId }: ProductPageProps): JSX.Element => {
             onClick: alertProductId,
             children: "Click Product Id",
           }}
+          loadingClass="product-page__action-loader"
         />
       </section>
     </main>

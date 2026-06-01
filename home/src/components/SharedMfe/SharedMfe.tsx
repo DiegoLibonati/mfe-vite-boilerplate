@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import DefaultLoading from "@shared/components/DefaultLoading/DefaultLoading";
+import SkeletonShimmer from "@shared/components/SkeletonShimmer/SkeletonShimmer";
 import MfeErrorBoundary from "@shared/components/MfeErrorBoundary/MfeErrorBoundary";
 
 import type { JSX } from "react";
@@ -9,6 +9,7 @@ const SharedMfe = <P extends object>({
   component: Component,
   componentProps,
   wrapperClass,
+  loadingClass,
 }: SharedMfeProps<P>): JSX.Element => {
   const rawClassName = (componentProps as { className?: unknown }).className;
   const inferredWrapperClass =
@@ -18,7 +19,7 @@ const SharedMfe = <P extends object>({
   return (
     <div data-mfe="shared" className={resolvedWrapperClass}>
       <MfeErrorBoundary>
-        <Suspense fallback={<DefaultLoading />}>
+        <Suspense fallback={<SkeletonShimmer className={loadingClass!} />}>
           <Component {...componentProps} />
         </Suspense>
       </MfeErrorBoundary>

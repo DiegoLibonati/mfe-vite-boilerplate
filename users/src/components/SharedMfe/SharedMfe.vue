@@ -3,7 +3,7 @@ import { ref, onErrorCaptured } from "vue";
 
 import type { SharedMfeProps } from "@users/types/props";
 
-import DefaultLoading from "@users/components/DefaultLoading/DefaultLoading.vue";
+import SkeletonShimmer from "@users/components/SkeletonShimmer/SkeletonShimmer.vue";
 import SharedMfeMount from "@users/components/SharedMfe/SharedMfeMount.vue";
 
 const props = defineProps<SharedMfeProps<P>>();
@@ -22,10 +22,10 @@ onErrorCaptured((err): boolean => {
     <SharedMfeMount
       :loader="props.loader"
       :component-props="props.componentProps"
-      :wrapper-class="props.wrapperClass"
+      :wrapper-class="props.wrapperClass!"
     />
     <template #fallback>
-      <DefaultLoading />
+      <SkeletonShimmer :loading-class="props.loadingClass!" />
     </template>
   </Suspense>
 </template>

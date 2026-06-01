@@ -96,7 +96,7 @@ describe("RemoteMfe", () => {
       await renderComponent();
 
       await waitFor(() => {
-        expect(document.querySelector(".remote-mfe__container")).not.toHaveClass(
+        expect(document.querySelector<HTMLDivElement>(".remote-mfe__container")).not.toHaveClass(
           "remote-mfe__container--hidden"
         );
       });

@@ -32,6 +32,7 @@ const HomePage = (): JSX.Element => {
                 target: "_self",
                 children: "Go to About Page",
               }}
+              loadingClass="home-page__link-loader"
             />
           </li>
           <li>
@@ -43,6 +44,7 @@ const HomePage = (): JSX.Element => {
                 href: "/about",
                 children: "Go to About Page in Another Window",
               }}
+              loadingClass="home-page__link-loader"
             />
           </li>
           <li>
@@ -55,6 +57,7 @@ const HomePage = (): JSX.Element => {
                 target: "_self",
                 children: "Go to Users Page",
               }}
+              loadingClass="home-page__link-loader"
             />
           </li>
         </ul>
@@ -72,6 +75,7 @@ const HomePage = (): JSX.Element => {
             },
             children: "Trigger Error Boundary",
           }}
+          loadingClass="home-page__demo-action-loader"
         />
 
         {shouldThrow ? <ThrowError /> : null}

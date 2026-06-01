@@ -30,6 +30,7 @@ const ContextPage = (): JSX.Element => {
             },
             children: "-",
           }}
+          loadingClass="context-page__counter-loader"
         />
 
         <output
@@ -52,6 +53,7 @@ const ContextPage = (): JSX.Element => {
             },
             children: "+",
           }}
+          loadingClass="context-page__counter-loader"
         />
       </section>
 
@@ -67,6 +69,7 @@ const ContextPage = (): JSX.Element => {
                 target: "_self",
                 children: "Go to Not Exists Page",
               }}
+              loadingClass="context-page__link-loader"
             />
           </li>
         </ul>

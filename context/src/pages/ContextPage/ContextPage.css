@@ -37,3 +37,15 @@
   font-size: 1.5rem;
   color: var(--color-white);
 }
+
+.skeleton-shimmer.context-page__counter-loader {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+}
+
+.skeleton-shimmer.context-page__link-loader {
+  width: 12rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+}

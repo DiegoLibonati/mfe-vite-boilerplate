@@ -22,6 +22,7 @@ interface RenderOptions {
   componentProps?: Record<string, unknown>;
   callbacks?: MfeCallbacks | null;
   wrapperClass?: string;
+  loadingClass?: string;
 }
 
 type Loader = () => Promise<SharedComponentModule<Record<string, unknown>>>;
@@ -53,6 +54,7 @@ const renderComponent = (
       loader,
       componentProps,
       ...(options.wrapperClass !== undefined ? { wrapperClass: options.wrapperClass } : {}),
+      ...(options.loadingClass !== undefined ? { loadingClass: options.loadingClass } : {}),
     },
     global: { provide },
   });
@@ -61,7 +63,7 @@ const renderComponent = (
 
 describe("SharedMfe", () => {
   describe("loading state", () => {
-    it("should render the default loading fallback before the module resolves", async () => {
+    it("should render a skeleton fallback before the module resolves", async () => {
       const pending: Loader = () =>
         new Promise<SharedComponentModule<Record<string, unknown>>>(() => {
           // Never resolves: keeps <Suspense> in its fallback state.
@@ -70,7 +72,21 @@ describe("SharedMfe", () => {
       renderComponent({ loader: pending });
       await flushPromises();
 
-      expect(document.querySelector(".default-loading")).not.toBeNull();
+      expect(document.querySelector<HTMLDivElement>(".skeleton-shimmer")).not.toBeNull();
+    });
+
+    it("should forward loadingClass to the skeleton fallback", async () => {
+      const pending: Loader = () =>
+        new Promise<SharedComponentModule<Record<string, unknown>>>(() => {
+          // Never resolves: keeps <Suspense> in its fallback state.
+        });
+
+      renderComponent({ loader: pending, loadingClass: "demo-loader" });
+      await flushPromises();
+
+      expect(document.querySelector<HTMLDivElement>(".skeleton-shimmer")).toHaveClass(
+        "demo-loader"
+      );
     });
   });
 
@@ -125,7 +141,7 @@ describe("SharedMfe", () => {
       await flushPromises();
 
       expect(mockModule.mountSpy).not.toHaveBeenCalled();
-      expect(document.querySelector(".default-loading")).toBeNull();
+      expect(document.querySelector<HTMLDivElement>(".skeleton-shimmer")).toBeNull();
     });
   });
 

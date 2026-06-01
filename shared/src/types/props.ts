@@ -27,3 +27,7 @@ export interface MfeErrorBoundaryProps {
   children: React.ReactNode;
   onError?: ((error: Error) => void) | undefined;
 }
+
+export interface SkeletonShimmerProps extends DefaultProps {
+  rounded?: boolean;
+}

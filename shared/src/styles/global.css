@@ -6,7 +6,11 @@
   --color-black-rgb: 0, 0, 0;
   --color-gray-dark: #444444;
   --color-gray-mid: #666666;
+  --color-gray-neutral: #e0e0e0;
   --color-gray-light: #888888;
+  --color-gray-light-warm: #f2f0f1;
+  --color-gray-light-neutral: #f0f0f0;
+  --color-gray-light-cool: #f0eeed;
   --color-accent: #ff6b6b;
   --color-accent-rgb: 255, 107, 107;
 

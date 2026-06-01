@@ -3,14 +3,14 @@ import { Component, Input, ViewChild, ViewEncapsulation, inject, signal } from "
 import type { ElementRef, AfterViewInit, OnDestroy, WritableSignal } from "@angular/core";
 import type { SharedComponentModule } from "shared/sdk";
 
-import DefaultLoadingComponent from "@about/components/default-loading/default-loading.component";
+import SkeletonShimmerComponent from "@about/components/skeleton-shimmer/skeleton-shimmer.component";
 
 import { MFE_CALLBACKS } from "@about/tokens/mfe-callbacks.token";
 
 @Component({
   selector: "app-shared-mfe",
   standalone: true,
-  imports: [DefaultLoadingComponent],
+  imports: [SkeletonShimmerComponent],
   encapsulation: ViewEncapsulation.None,
   templateUrl: "./shared-mfe.component.html",
 })
@@ -18,6 +18,7 @@ class SharedMfeComponent implements AfterViewInit, OnDestroy {
   @Input({ required: true }) loader!: () => Promise<SharedComponentModule>;
   @Input({ required: true }) componentProps!: Record<string, unknown>;
   @Input() wrapperClass?: string;
+  @Input() loadingClass?: string;
 
   @ViewChild("container", { static: true }) containerRef!: ElementRef<HTMLElement>;
 

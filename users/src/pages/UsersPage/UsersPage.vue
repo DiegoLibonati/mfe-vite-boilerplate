@@ -39,7 +39,11 @@ const homeLinkProps: Omit<LinkProps, "children"> & { children: string } = {
     <nav aria-label="Page navigation">
       <ul class="links">
         <li>
-          <SharedMfe :loader="loadLink" :component-props="homeLinkProps" />
+          <SharedMfe
+            :loader="loadLink"
+            :component-props="homeLinkProps"
+            loading-class="users-page__link-loader"
+          />
         </li>
       </ul>
     </nav>
@@ -80,5 +84,11 @@ const homeLinkProps: Omit<LinkProps, "children"> & { children: string } = {
 
 .users-page .links {
   margin-top: 2rem;
+}
+
+.skeleton-shimmer.users-page__link-loader {
+  width: 11rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
 }
 </style>

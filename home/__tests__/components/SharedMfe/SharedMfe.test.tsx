@@ -16,6 +16,7 @@ interface RenderOptions {
   component?: React.ComponentType<DummyProps>;
   componentProps?: DummyProps;
   wrapperClass?: string;
+  loadingClass?: string;
 }
 
 const Dummy = ({ label = "dummy" }: DummyProps): JSX.Element => (
@@ -28,8 +29,8 @@ const renderComponent = (options: RenderOptions = {}): RenderResult => {
   return render(<SharedMfe component={component} componentProps={componentProps} {...rest} />);
 };
 
-const hostOf = (result: RenderResult): HTMLElement | null =>
-  result.container.querySelector<HTMLElement>("[data-mfe='shared']");
+const hostOf = (result: RenderResult): HTMLDivElement | null =>
+  result.container.querySelector<HTMLDivElement>("[data-mfe='shared']");
 
 describe("SharedMfe", () => {
   describe("rendering", () => {
@@ -47,7 +48,7 @@ describe("SharedMfe", () => {
   });
 
   describe("loading state", () => {
-    it("should show the default loading fallback while a lazy component is pending", () => {
+    it("should show a skeleton fallback while a lazy component is pending", () => {
       const Never = lazy(
         () =>
           new Promise<{ default: React.ComponentType<DummyProps> }>(() => {
@@ -55,9 +56,26 @@ describe("SharedMfe", () => {
           })
       );
 
-      renderComponent({ component: Never });
+      const result = renderComponent({ component: Never });
 
-      expect(screen.getByLabelText("Loading remote module")).toBeInTheDocument();
+      expect(
+        result.container.querySelector<HTMLDivElement>(".skeleton-shimmer")
+      ).toBeInTheDocument();
+    });
+
+    it("should forward loadingClass to the skeleton fallback", () => {
+      const Never = lazy(
+        () =>
+          new Promise<{ default: React.ComponentType<DummyProps> }>(() => {
+            // Never resolves: keeps the component suspended in its loading state.
+          })
+      );
+
+      const result = renderComponent({ component: Never, loadingClass: "demo-loader" });
+
+      expect(result.container.querySelector<HTMLDivElement>(".skeleton-shimmer")).toHaveClass(
+        "demo-loader"
+      );
     });
   });
 

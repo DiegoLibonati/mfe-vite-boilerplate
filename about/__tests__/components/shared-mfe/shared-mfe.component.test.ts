@@ -14,6 +14,7 @@ interface RenderInputs {
   loader?: () => Promise<SharedComponentModule>;
   componentProps?: Record<string, unknown>;
   wrapperClass?: string;
+  loadingClass?: string;
 }
 
 interface RenderResult {
@@ -48,6 +49,9 @@ const renderComponent = async (inputs: RenderInputs = {}): Promise<RenderResult>
   if (inputs.wrapperClass !== undefined) {
     fixture.componentRef.setInput("wrapperClass", inputs.wrapperClass);
   }
+  if (inputs.loadingClass !== undefined) {
+    fixture.componentRef.setInput("loadingClass", inputs.loadingClass);
+  }
 
   fixture.detectChanges();
   await fixture.whenStable();
@@ -67,7 +71,7 @@ describe("SharedMfeComponent", () => {
       expect(containerOf(fixture)).not.toBeNull();
     });
 
-    it("should show the default loading fallback while the module is loading", async () => {
+    it("should show a skeleton fallback while the module is loading", async () => {
       const { fixture, module } = await renderComponent({
         loader: () =>
           new Promise<SharedComponentModule>(() => {
@@ -76,9 +80,23 @@ describe("SharedMfeComponent", () => {
       });
 
       expect(
-        (fixture.nativeElement as HTMLElement).querySelector("app-default-loading")
+        (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>("app-skeleton-shimmer")
       ).not.toBeNull();
       expect(module.mount).not.toHaveBeenCalled();
+    });
+
+    it("should forward loadingClass to the skeleton fallback", async () => {
+      const { fixture } = await renderComponent({
+        loader: () =>
+          new Promise<SharedComponentModule>(() => {
+            // Never resolves: keeps the component in its loading state.
+          }),
+        loadingClass: "demo-loader",
+      });
+
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector<HTMLDivElement>(".skeleton-shimmer")
+      ).toHaveClass("demo-loader");
     });
   });
 

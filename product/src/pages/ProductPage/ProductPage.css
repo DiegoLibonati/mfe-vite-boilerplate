@@ -18,3 +18,15 @@
   height: auto;
   margin-top: 1rem;
 }
+
+.skeleton-shimmer.product-page__link-loader {
+  width: 12rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+}
+
+.skeleton-shimmer.product-page__action-loader {
+  width: 10rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+}

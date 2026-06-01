@@ -17,3 +17,9 @@
   height: auto;
   margin-top: 1rem;
 }
+
+.skeleton-shimmer.about-page__link-loader {
+  width: 13rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+}

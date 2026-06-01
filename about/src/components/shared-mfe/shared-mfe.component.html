@@ -1,4 +1,4 @@
 @if (status() === 'loading') {
-  <app-default-loading />
+  <app-skeleton-shimmer [loadingClass]="loadingClass" />
 }
 <div #container [class]="resolvedWrapperClass" [hidden]="status() !== 'mounted'"></div>

@@ -293,7 +293,7 @@ mfe-vite-boilerplate/
 │   └── src/
 │       ├── exports.ts              # Public API barrel (exposed as ./sdk → imported as shared/sdk)
 │       ├── mount.tsx               # Universal React app mount/unmount factory
-│       ├── components/             # Link, Action, MfeErrorBoundary, DefaultLoading (+ component mounts)
+│       ├── components/             # Link, Action, MfeErrorBoundary, DefaultLoading, SkeletonShimmer (+ component mounts)
 │       ├── contexts/               # InheritedContext / InheritedProvider
 │       ├── hooks/                  # useInheritedContext
 │       ├── helpers/                # createComponentMount<P>
@@ -421,11 +421,13 @@ Each framework implements it natively:
 
 ### Loading Shared Components
 
-Pages never bind the shared SDK statically — they load it lazily through a per-framework `SharedMfe` wrapper that uses each framework's native "suspense" primitive and the shared `DefaultLoading` fallback. The contract is identical everywhere (pass a lazy loader + props → get a shared loading fallback + error handling); only the mechanism differs, because `Link`/`Action` are React components:
+Pages never bind the shared SDK statically — they load it lazily through a per-framework `SharedMfe` wrapper that uses each framework's native "suspense" primitive and a per-element `SkeletonShimmer` fallback. Each call site passes a `loadingClass`; the skeleton renders as `.skeleton-shimmer <loadingClass>`, so its width/height/border-radius live in the consuming MFE's CSS and match the component being loaded (e.g. `.skeleton-shimmer.home-page__link-loader { … }`). `DefaultLoading` is reserved for remote/route loading (see the Host MFE Loader above); shared components mounting in place use the skeleton instead. The contract is identical everywhere (pass a lazy loader + props + `loadingClass` → get a sized skeleton fallback + error handling); only the mechanism differs, because `Link`/`Action` are React components:
 
-- **React** (`home`/`product`/`context`) — `React.lazy(() => import("shared/sdk").then(m => ({ default: m.Link })))` rendered **directly** inside `<Suspense>` + `MfeErrorBoundary`. No imperative bridge is needed; the host `<div data-mfe="shared">` preserves the component's scoped CSS.
-- **Vue** (`users`) — `<Suspense>` + a top-level `await loader()` in `SharedMfeMount.vue`, then imperative `mount`/`unmount` (React can't render as a native Vue child).
-- **Angular** (`about`) — a `status` signal with `@if`/`@loading` showing `DefaultLoading`, then imperative `mount`/`unmount` in `ngAfterViewInit`.
+- **React** (`home`/`product`/`context`) — `React.lazy(() => import("shared/sdk").then(m => ({ default: m.Link })))` rendered **directly** inside `<Suspense>` (fallback: the shared React `SkeletonShimmer`) + `MfeErrorBoundary`. No imperative bridge is needed; the host `<div data-mfe="shared">` preserves the component's scoped CSS.
+- **Vue** (`users`) — `<Suspense>` + a top-level `await loader()` in `SharedMfeMount.vue` (fallback: a native `SkeletonShimmer.vue`), then imperative `mount`/`unmount` (React can't render as a native Vue child).
+- **Angular** (`about`) — a `status` signal with `@if` showing a native `app-skeleton-shimmer` component, then imperative `mount`/`unmount` in `ngAfterViewInit`.
+
+The `SkeletonShimmer` fallback is rendered **natively** by each framework (React component / `.vue` / Angular component, all sharing `shared/.../SkeletonShimmer.css`) — never as a federated mount, since the federated bundle is exactly what is still loading. Its base `.skeleton-shimmer` styles (background + shimmer animation) are shared; only the per-element size is overridden via `loadingClass`.
 
 The imperative `mount`/`unmount` bridge (`LinkModule`/`ActionModule` via `createComponentMount<P>`) is therefore only used by the Vue and Angular hosts.
 
