@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import DefaultLoading from "@shared/components/DefaultLoading/DefaultLoading";
+import { DefaultLoading } from "shared/sdk";
 
 import type { JSX } from "react";
 import type { User } from "shared/sdk";
@@ -36,7 +36,11 @@ const UsersApp = ({ callbacks }: UsersAppProps): JSX.Element => {
   }, []);
 
   if (loading) {
-    return <DefaultLoading />;
+    return (
+      <div data-mfe="shared">
+        <DefaultLoading />
+      </div>
+    );
   }
 
   if (error) {

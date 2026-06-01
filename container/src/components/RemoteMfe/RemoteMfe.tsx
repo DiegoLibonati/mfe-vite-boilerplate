@@ -1,5 +1,5 @@
 import { Suspense, lazy, useMemo, useState } from "react";
-import DefaultLoading from "@shared/components/DefaultLoading/DefaultLoading";
+import { DefaultLoading } from "shared/sdk";
 
 import type { JSX } from "react";
 import type { MfeModule } from "shared/sdk";
@@ -46,7 +46,13 @@ const RemoteMfe = ({
 
   return (
     <RemoteErrorBoundary key={retryKey} onRetry={handleRetry}>
-      <Suspense fallback={<DefaultLoading />}>
+      <Suspense
+        fallback={
+          <div data-mfe="shared">
+            <DefaultLoading />
+          </div>
+        }
+      >
         <LazyRemote />
       </Suspense>
     </RemoteErrorBoundary>

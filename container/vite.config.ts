@@ -14,6 +14,11 @@ export default defineConfig(({ mode }): UserConfig => {
       federation({
         name: "container",
         remotes: {
+          shared: {
+            type: "module",
+            name: "shared",
+            entry: env.VITE_REMOTE_SHARED_URL || "http://localhost:4000/remoteEntry.js",
+          },
           home: {
             type: "module",
             name: "home",
