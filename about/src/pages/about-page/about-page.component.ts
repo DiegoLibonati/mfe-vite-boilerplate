@@ -13,10 +13,10 @@ import SharedMfeComponent from "@about/components/shared-mfe/shared-mfe.componen
   styleUrl: "./about-page.component.css",
 })
 class AboutPageComponent {
-  loadLink = (): Promise<SharedComponentModule<LinkProps>> =>
+  public loadLink = (): Promise<SharedComponentModule<LinkProps>> =>
     import("shared/sdk").then((m) => m.LinkModule);
 
-  productLinkProps = {
+  public productLinkProps = {
     id: "link-product",
     href: "/products/12",
     ariaLabel: "Go to Product Page 12",
@@ -24,7 +24,7 @@ class AboutPageComponent {
     children: "Go to Product Page: 12",
   };
 
-  contextLinkProps = {
+  public contextLinkProps = {
     id: "link-context",
     href: "/context",
     ariaLabel: "Go to Context Page",
