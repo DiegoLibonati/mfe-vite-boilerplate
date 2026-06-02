@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { SkeletonShimmer, MfeErrorBoundary } from "shared/sdk";
+import { SkeletonShimmer } from "shared/sdk";
+import MfeErrorBoundary from "@shared/components/MfeErrorBoundary/MfeErrorBoundary";
 
 import type { JSX } from "react";
 import type { SharedMfeProps } from "@product/types/props";

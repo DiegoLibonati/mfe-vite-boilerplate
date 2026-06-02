@@ -2,7 +2,6 @@ export { default as Link } from "@shared/components/Link/Link";
 export { default as Action } from "@shared/components/Action/Action";
 export { default as DefaultLoading } from "@shared/components/DefaultLoading/DefaultLoading";
 export { default as SkeletonShimmer } from "@shared/components/SkeletonShimmer/SkeletonShimmer";
-export { default as MfeErrorBoundary } from "@shared/components/MfeErrorBoundary/MfeErrorBoundary";
 export { InheritedProvider } from "@shared/contexts/InheritedContext/InheritedProvider";
 export { useInheritedContext } from "@shared/hooks/useInheritedContext";
 export { mount, unmount } from "@shared/Shared.module";
