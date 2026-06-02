@@ -39,10 +39,11 @@ export default defineConfig(({ mode }): UserConfig => {
       postcss: {
         plugins: [
           prefixSelector({
-            prefix: '[data-mfe="context"]',
+            prefix: '[data-mfe="context"]'.repeat(2),
             transform: (prefix, selector, prefixedSelector) => {
               if (selector.startsWith("*")) return selector;
               if ([":root", "html", "body"].includes(selector)) return prefix;
+              if (/^[a-z][\w-]*$/i.test(selector)) return selector;
               return prefixedSelector;
             },
           }),

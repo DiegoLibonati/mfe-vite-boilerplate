@@ -33,10 +33,11 @@ export default defineConfig(({ mode }): UserConfig => {
       postcss: {
         plugins: [
           prefixSelector({
-            prefix: '[data-mfe="shared"]',
+            prefix: '[data-mfe="shared"]'.repeat(1),
             transform: (prefix, selector, prefixedSelector) => {
               if (selector.startsWith("*")) return selector;
               if ([":root", "html", "body"].includes(selector)) return prefix;
+              if (/^[a-z][\w-]*$/i.test(selector)) return selector;
               return prefixedSelector;
             },
           }),

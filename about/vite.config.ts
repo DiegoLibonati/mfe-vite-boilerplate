@@ -83,10 +83,11 @@ export default defineConfig(({ mode }): AboutConfig => {
       postcss: {
         plugins: [
           prefixSelector({
-            prefix: '[data-mfe="about"]',
+            prefix: '[data-mfe="about"]'.repeat(2),
             transform: (prefix, selector, prefixedSelector) => {
               if (selector.startsWith("*")) return selector;
               if ([":root", "html", "body"].includes(selector)) return prefix;
+              if (/^[a-z][\w-]*$/i.test(selector)) return selector;
               return prefixedSelector;
             },
           }),

@@ -2,6 +2,7 @@ import path from "path";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import { federation } from "@module-federation/vite";
+import prefixSelector from "postcss-prefix-selector";
 
 import type { UserConfig } from "vite";
 
@@ -59,6 +60,22 @@ export default defineConfig(({ mode }): UserConfig => {
       }),
       react(),
     ],
+    css: {
+      postcss: {
+        plugins: [
+          prefixSelector({
+            prefix: '[data-mfe="container"]'.repeat(3),
+            transform: (prefix, selector, prefixedSelector) => {
+              if (selector.startsWith("*")) return selector;
+              if ([":root", "html", "body"].includes(selector)) return prefix;
+              if (/^[a-z][\w-]*$/i.test(selector)) return selector;
+              return prefixedSelector;
+            },
+            ignoreFiles: [/index\.css$/, /global\.css$/],
+          }),
+        ],
+      },
+    },
     resolve: {
       alias: [
         { find: "@shared", replacement: path.resolve(import.meta.dirname, "../shared/src") },
