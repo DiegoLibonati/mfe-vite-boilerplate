@@ -1,5 +1,5 @@
 import { act, render, waitFor } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router";
 
 import type { RenderResult } from "@testing-library/react";
 import type { ProductAppProps } from "@container/types/props";

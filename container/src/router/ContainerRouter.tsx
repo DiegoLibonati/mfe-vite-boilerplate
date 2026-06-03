@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router";
 
 import type { JSX } from "react";
 

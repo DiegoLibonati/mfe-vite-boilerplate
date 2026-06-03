@@ -19,7 +19,7 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 - **Universal mount contract** — every remote exposes `{ mount(container, options), unmount(container) }`. The host mounts a remote into a plain `HTMLElement` and tears it down on route change, regardless of the underlying framework.
 - **`shared` SDK remote** — a federated remote (port `4000`) that centralizes framework-agnostic code (domain types, CSS variables/reset) and React building blocks (`Link`, `Action`, `InheritedProvider`, `useInheritedContext`, the `mount`/`unmount` factory, and `LinkModule`/`ActionModule` component mounts). It exposes them as `./sdk` over `remoteEntry.js`; every remote declares `shared` in its `remotes` and imports the public API from `shared/sdk` at runtime, so the shared code (and React itself) loads once across the whole app. Source files inside a package resolve shared modules through the `@shared/*` path alias.
 - **Cross-MFE communication** — remotes never import the host. They receive `callbacks` at mount time (`onNavigate` for routing, optional `onEvent` for events). The `context` remote demonstrates a counter that emits `MfeCounterChangeEvent` up to the host; the `users` remote receives a `User[]` array the host fetched from an API.
-- **Shared singletons** — `react`, `react-dom`, `react-router-dom`, and `vue` are negotiated as singletons across remotes via Module Federation, so they load once.
+- **Shared singletons** — `react`, `react-dom`, `react-router`, and `vue` are negotiated as singletons across remotes via Module Federation, so they load once.
 - **Async bootstrap pattern** — each remote follows `index → bootstrap` so Module Federation can negotiate shared dependencies before the app renders, and each remote can also run **standalone** (its own `index.html` + `bootstrap`).
 - **Centralized, strict type system** — TypeScript strict mode with `noUncheckedIndexedAccess`, `noImplicitOverride`, and `exactOptionalPropertyTypes`. Types live under each package's `src/types/`, split by concern (props, states, contexts, hooks, env, domain models).
 - **Testing per package** — React/Angular packages use **Jest 30 + ts-jest + jsdom** (container also uses **MSW** for network mocks); the Vue package uses **Vitest 3 + @testing-library/vue**. Coverage threshold enforced at 70% across branches, functions, lines, and statements.
@@ -57,7 +57,7 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 ```
 "react": "^19.2.4"
 "react-dom": "^19.2.4"
-"react-router-dom": "7.13.2"   (container only)
+"react-router": "7.16.0"   (container only)
 ```
 
 #### DevDependencies
