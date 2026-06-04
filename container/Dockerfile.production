@@ -23,7 +23,7 @@ ENV VITE_REMOTE_SHARED_URL=$VITE_REMOTE_SHARED_URL
 
 WORKDIR /home/shared
 COPY shared/package*.json shared/.npmrc ./
-RUN npm ci 
+RUN npm ci --ignore-scripts
 
 WORKDIR /home/app
 COPY container/package*.json container/.npmrc ./
