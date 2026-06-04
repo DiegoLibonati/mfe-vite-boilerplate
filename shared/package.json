@@ -55,7 +55,8 @@
     "format:all": "prettier --write \"src/**/*.{ts,tsx,css}\" \"__tests__/**/*.{ts,tsx}\"",
     "test": "jest --verbose",
     "test:watch": "jest --watchAll --verbose",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "prepare": "cd ../ && git config core.hooksPath .githooks"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

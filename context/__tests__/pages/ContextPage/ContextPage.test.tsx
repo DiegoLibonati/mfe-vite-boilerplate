@@ -26,30 +26,44 @@ const findActionName = async (name: string): Promise<string> => {
   return name;
 };
 
+// The page lazy-loads its shared SDK components (Action/Link) via dynamic import.
+// Awaiting one of them lets the import resolve inside act(), so the suspended tree
+// does not settle after the test ends (which would log an act(...) warning).
+const flushSharedSdk = (): Promise<HTMLElement> =>
+  screen.findByRole("link", { name: "Go to unknown page" });
+
 describe("ContextPage", () => {
   describe("rendering", () => {
-    it("should render the page title", () => {
+    it("should render the page title", async () => {
       renderPage();
 
       expect(screen.getByRole("heading", { name: "Context Page" })).toBeInTheDocument();
+
+      await flushSharedSdk();
     });
 
-    it("should render the counter section", () => {
+    it("should render the counter section", async () => {
       renderPage();
 
       expect(screen.getByRole("region", { name: "Counter" })).toBeInTheDocument();
+
+      await flushSharedSdk();
     });
 
-    it("should render the counter output with initial value 0", () => {
+    it("should render the counter output with initial value 0", async () => {
       renderPage();
 
       expect(screen.getByRole("status", { name: /Counter value/ })).toHaveTextContent("0");
+
+      await flushSharedSdk();
     });
 
-    it("should render the navigation section", () => {
+    it("should render the navigation section", async () => {
       renderPage();
 
       expect(screen.getByRole("navigation", { name: "Page navigation" })).toBeInTheDocument();
+
+      await flushSharedSdk();
     });
   });
 

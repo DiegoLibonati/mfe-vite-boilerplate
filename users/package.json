@@ -50,7 +50,8 @@
     "format:all": "prettier --write \"src/**/*.{ts,vue,css}\" \"__tests__/**/*.ts\"",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prepare": "cd ../ && git config core.hooksPath .githooks"
   },
   "lint-staged": {
     "*.{ts,vue}": [

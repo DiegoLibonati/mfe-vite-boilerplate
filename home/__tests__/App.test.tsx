@@ -16,9 +16,13 @@ jest.mock("shared/sdk", () => {
 const renderApp = (): RenderResult => render(<App />);
 
 describe("App", () => {
-  it("should render the HomePage", () => {
+  it("should render the HomePage", async () => {
     renderApp();
 
     expect(screen.getByRole("heading", { name: "Home Page" })).toBeInTheDocument();
+
+    // HomePage lazy-loads its shared SDK components; await one so the import
+    // resolves inside act() instead of settling after the test ends.
+    await screen.findByRole("link", { name: "Go to About Page" });
   });
 });

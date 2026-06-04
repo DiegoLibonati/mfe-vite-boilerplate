@@ -23,7 +23,7 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 - **Async bootstrap pattern** — each remote follows `index → bootstrap` so Module Federation can negotiate shared dependencies before the app renders, and each remote can also run **standalone** (its own `index.html` + `bootstrap`).
 - **Centralized, strict type system** — TypeScript strict mode with `noUncheckedIndexedAccess`, `noImplicitOverride`, and `exactOptionalPropertyTypes`. Types live under each package's `src/types/`, split by concern (props, states, contexts, hooks, env, domain models).
 - **Testing per package** — React/Angular packages use **Jest 30 + ts-jest + jsdom** (container also uses **MSW** for network mocks); the Vue package uses **Vitest 3 + @testing-library/vue**. Coverage threshold enforced at 70% across branches, functions, lines, and statements.
-- **ESLint + Prettier + Git hooks** — a single repo-wide `pre-commit` hook runs `lint-staged` only on the packages whose files are staged. Hooks install automatically when you run `npm install` inside `container`.
+- **ESLint + Prettier + Git hooks** — a single repo-wide `pre-commit` hook runs `lint-staged` only on the packages whose files are staged. Hooks install automatically when you run `npm install` inside **any** package — every package's `prepare` script points Git at `.githooks`.
 - **GitHub Actions CI** — per-package `lint-and-audit → test → build` pipelines plus a Docker build matrix for every package's dev and prod images.
 
 **How to use it:**
@@ -155,7 +155,7 @@ This is a **monorepo of independent packages** — there is no root `package.jso
    done
    ```
 
-   > Installing inside `container` runs its `prepare` script, which points Git at `.githooks` (`git config core.hooksPath .githooks`) and activates the repo-wide pre-commit hook.
+   > Every package's `prepare` script points Git at `.githooks` (`git config core.hooksPath .githooks`), so the first `npm install` you run — in any package — activates the repo-wide pre-commit hook.
 
 4. Copy each `.env.example` to `.env` and adjust values (see [Env Keys](#env-keys)):
 
@@ -184,7 +184,7 @@ The host application runs at `http://localhost:3000` and lazy-loads each remote'
 
 Code quality is enforced through a single repo-wide Git hook in [`.githooks/pre-commit`](.githooks/pre-commit). On every commit it inspects the staged files and runs `lint-staged` **only** for the packages that have staged changes, so committing a change in `users` never lints `about`.
 
-The hook is wired up by `container`'s `prepare` script (`git config core.hooksPath .githooks`), which runs automatically after `npm install` inside `container`. If hooks are not active after a fresh clone, run the install again or set the path manually:
+The hook is wired up by every package's `prepare` script (`git config core.hooksPath .githooks`), which runs automatically after `npm install` in any package. If hooks are not active after a fresh clone, run the install again or set the path manually:
 
 ```bash
 git config core.hooksPath .githooks
